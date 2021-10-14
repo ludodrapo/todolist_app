@@ -12,7 +12,7 @@ security:
     providers:
         doctrine:
             entity:
-                class: App:User
+                class: App\Entity\User
                 property: username
 
     firewalls:
