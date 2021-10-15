@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -43,7 +44,7 @@ class Task
 
     public function __construct()
     {
-        $this->createdAt = new DateTime('now');
+        $this->createdAt = new \DateTimeImmutable();
         $this->isDone = false;
     }
 
