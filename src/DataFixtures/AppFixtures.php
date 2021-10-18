@@ -36,7 +36,14 @@ class AppFixtures extends Fixture
             'classer les petites pièces de Lego'
         ];
 
-        $index = 1;
+        for ($i = 1; $i <= 10; $i++) {
+            $newTask = new Task;
+                $newTask->setTitle('Tâche n°' . $i );
+                $newTask->setContent($tasks[array_rand($tasks)]);
+                $manager->persist($newTask);
+        }
+
+        $index = 11;
 
         for ($i = 1; $i <= 10; $i++) {
             $newUser = new User;
@@ -50,6 +57,7 @@ class AppFixtures extends Fixture
                 $newTask = new Task;
                 $newTask->setTitle('Tâche n°' . $index . ' pour ' . $newUser->getUsername());
                 $newTask->setContent($tasks[array_rand($tasks)]);
+                $newTask->setAuthor($newUser);
                 $manager->persist($newTask);
                 $index++;
             }
