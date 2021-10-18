@@ -2,7 +2,6 @@
 
 namespace tests\Controller;
 
-use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
