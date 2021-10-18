@@ -2,6 +2,7 @@
 
 namespace tests\Controller;
 
+use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -22,9 +23,10 @@ class TaskControllerTest extends WebTestCase
         $client->click($link);
         $this->assertRouteSame('task_list');
         $this->assertResponseIsSuccessful();
+
     }
 
-    public function testDisplaysAllTasks()
+    public function testDisplaysThisUserTasks()
     {
         $client = static::createClient();
 
@@ -32,8 +34,9 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $tasksCount = count($taskRepository->findAll());
+        // $taskRepository = static::getContainer()->get(TaskRepository::class);
+        // instead of all tasks count : check if it equals this user number of tasks:
+        $tasksCount = count($testUser->getTasks()); 
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
