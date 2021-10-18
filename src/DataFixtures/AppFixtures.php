@@ -40,7 +40,7 @@ class AppFixtures extends Fixture
 
         for ($i = 1; $i <= 10; $i++) {
             $newUser = new User;
-            $newUser->setUsername('User' . $i);
+            $newUser->setUsername('user' . $i);
             $hashedPassword = $this->hasher->hashPassword($newUser, 'password');
             $newUser->setPassword($hashedPassword);
             $newUser->setEmail('user' . $i . '@gmail.com');

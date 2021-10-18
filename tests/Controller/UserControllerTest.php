@@ -7,12 +7,14 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserControllerTest extends WebTestCase
 {
-    public function testLinkToUserCreatePage()
+    public function testLinkToUserCreationPageWithRoleAdminReturnsOk()
     {
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
+        $testUser = $userRepository->findOneBy([
+            'roles' => ['ROLE_ADMIN']
+        ]);
         $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/');
@@ -24,20 +26,51 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
+    public function testNoLinkToUsersPathWithRoleUser()
+    {
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([
+            'roles' => ['ROLE_USER']
+        ]);
+        $client->loginUser($testUser);
+
+        $crawler = $client->request('GET', '/');
+        $this->assertSelectorTextNotContains('a', 'Créer un utilisateur');
+    }
+
+    public function testUsersPathAccessDeniedToRoleUser()
+    {
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([
+            'roles' => ['ROLE_USER']
+        ]);
+        $client->loginUser($testUser);
+
+        $client->request('GET', '/users');
+        $this->assertSelectorExists('.alert.alert-danger');
+    }
+
     public function testSuccessfullUserCreation()
     {
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $adminUser = $userRepository->findOneBy([
+            'roles' => ['ROLE_ADMIN']
+        ]);
+        $client->loginUser($adminUser);
 
         $crawler = $client->request('GET', '/users/create');
         $form = $crawler->selectButton('Ajouter')->form([
             'user[username]' => 'testUser',
             'user[password][first]' => 'password',
             'user[password][second]' => 'password',
-            'user[email]' => 'testUser@gmail.com'
+            'user[email]' => 'testUser@gmail.com',
+            'user[roles]' => ['ROLE_USER']
         ]);
         $client->submit($form);
         $client->followRedirect();
@@ -50,8 +83,13 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $testUser = $userRepository->findOneBy([
+            'roles' => ['ROLE_USER']
+        ]);
+        $adminUser = $userRepository->findOneBy([
+            'roles' => ['ROLE_ADMIN']
+        ]);
+        $client->loginUser($adminUser);
 
         $crawler = $client->request(
             'GET', 
@@ -61,11 +99,12 @@ class UserControllerTest extends WebTestCase
             'user[username]' => 'modifiedTestUser',
             'user[password][first]' => 'newPassword',
             'user[password][second]' => 'newPassword',
-            'user[email]' => 'modifedTestUser@gmail.com'
+            'user[email]' => 'modifedTestUser@gmail.com',
+            'user[roles]' => ['ROLE_ADMIN']
         ]);
         $client->click($form);
 
-        $crawler = $client->followRedirect();
+        $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
     }
 }

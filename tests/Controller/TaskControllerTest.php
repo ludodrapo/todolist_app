@@ -22,6 +22,7 @@ class TaskControllerTest extends WebTestCase
         $client->click($link);
         $this->assertRouteSame('task_list');
         $this->assertResponseIsSuccessful();
+
     }
 
     public function testDisplaysAllTasks()
@@ -32,8 +33,9 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $tasksCount = count($taskRepository->findAll());
+        // $taskRepository = static::getContainer()->get(TaskRepository::class);
+        // instead of all tasks count : check if it equals this user number of tasks:
+        $tasksCount = count($testUser->getTasks()); 
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
