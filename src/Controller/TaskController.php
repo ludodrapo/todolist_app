@@ -16,7 +16,7 @@ class TaskController extends AbstractController
     public function listAction()
     {
         return $this->render('task/list.html.twig', [
-            'tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll()
+            'tasks' => $this->getUser()->getTasks()
         ]);
     }
 
@@ -31,8 +31,8 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setAuthor($this->getUser());
             $em = $this->getDoctrine()->getManager();
-
             $em->persist($task);
             $em->flush();
 
@@ -49,22 +49,30 @@ class TaskController extends AbstractController
      */
     public function editAction(Task $task, Request $request)
     {
-        $form = $this->createForm(TaskType::class, $task);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
-
+        if ($this->getUser() != $task->getAuthor()) {
+            $this->addFlash(
+                'error',
+                "Il n'est pas possible d'accéder à une tâche d'un autre utilisateur."
+            );
             return $this->redirectToRoute('task_list');
-        }
+        } else {
 
-        return $this->render('task/edit.html.twig', [
-            'form' => $form->createView(),
-            'task' => $task,
-        ]);
+            $form = $this->createForm(TaskType::class, $task);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
+
+                $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+                return $this->redirectToRoute('task_list');
+            }
+
+            return $this->render('task/edit.html.twig', [
+                'form' => $form->createView(),
+                'task' => $task,
+            ]);
+        }
     }
 
     /**
@@ -72,12 +80,21 @@ class TaskController extends AbstractController
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
-        $this->getDoctrine()->getManager()->flush();
+        if ($this->getUser() != $task->getAuthor()) {
+            $this->addFlash(
+                'error',
+                "Il n'est pas possible de valider une tâche d'un autre utilisateur."
+            );
+            return $this->redirectToRoute('task_list');
+        } else {
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+            $task->toggle(!$task->isDone());
+            $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirectToRoute('task_list');
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+
+            return $this->redirectToRoute('task_list');
+        }
     }
 
     /**
@@ -85,12 +102,22 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
+        if ($this->getUser() != $task->getAuthor()) {
+            $this->addFlash(
+                'error',
+                "Il n'est pas possible de supprimer une tâche d'un autre utilisateur."
+            );
+            return $this->redirectToRoute('task_list');
 
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
+        } else {
 
-        return $this->redirectToRoute('task_list');
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
+
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+
+            return $this->redirectToRoute('task_list');
+        }
     }
 }

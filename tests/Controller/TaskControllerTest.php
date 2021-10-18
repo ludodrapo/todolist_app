@@ -22,7 +22,6 @@ class TaskControllerTest extends WebTestCase
         $client->click($link);
         $this->assertRouteSame('task_list');
         $this->assertResponseIsSuccessful();
-
     }
 
     public function testDisplaysThisUserTasks()
@@ -35,7 +34,7 @@ class TaskControllerTest extends WebTestCase
 
         // $taskRepository = static::getContainer()->get(TaskRepository::class);
         // instead of all tasks count : check if it equals this user number of tasks:
-        $tasksCount = count($testUser->getTasks()); 
+        $tasksCount = count($testUser->getTasks());
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
@@ -110,10 +109,9 @@ class TaskControllerTest extends WebTestCase
             'task[content]' => 'Test de contenu'
         ]);
         $client->submit($form);
-
-        $crawler = $client->followRedirect();
+        $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
-        
+
         // $this->assertSelectorTextContains('h4 > a', 'Test de titre');
         // does not work because only the first occurence is compared
         // reverse in twig ?
@@ -131,7 +129,7 @@ class TaskControllerTest extends WebTestCase
         $taskToEdit = $taskRepository->findOneBy([]);
 
         $crawler = $client->request(
-            'GET', 
+            'GET',
             '/tasks/' . $taskToEdit->getId() . '/edit'
         );
         $form = $crawler->selectButton('Modifier')->form([
@@ -140,7 +138,7 @@ class TaskControllerTest extends WebTestCase
         ]);
         $client->click($form);
 
-        $crawler = $client->followRedirect();
+        $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
     }
 }
