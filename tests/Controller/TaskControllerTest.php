@@ -2,7 +2,6 @@
 
 namespace tests\Controller;
 
-use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -32,8 +31,6 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        // $taskRepository = static::getContainer()->get(TaskRepository::class);
-        // instead of all tasks count : check if it equals this user number of tasks:
         $tasksCount = count($testUser->getTasks());
 
         $crawler = $client->request('GET', '/tasks');
@@ -41,7 +38,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertCount($tasksCount, $crawler->filter('.thumbnail'));
     }
 
-    public function testDeleteOneTask()
+    public function testSuccessfullDeleteOneTask()
     {
         $client = static::createClient();
 
@@ -57,7 +54,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testToggleOneTask()
+    public function testSuccessfullToggleOneTask()
     {
         $client = static::createClient();
 
