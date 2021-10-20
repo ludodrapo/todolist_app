@@ -12,9 +12,8 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([
-            'roles' => ['ROLE_ADMIN']
-        ]);
+        $testUser = $userRepository->findOneBy(['roles' => ["ROLE_ADMIN"]]);
+        dd($testUser);
         $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/');
@@ -32,7 +31,7 @@ class UserControllerTest extends WebTestCase
 
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneBy([
-            'roles' => ['ROLE_USER']
+            'roles' => []
         ]);
         $client->loginUser($testUser);
 

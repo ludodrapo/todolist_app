@@ -111,10 +111,6 @@ class TaskControllerTest extends WebTestCase
         $client->submit($form);
         $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
-
-        // $this->assertSelectorTextContains('h4 > a', 'Test de titre');
-        // does not work because only the first occurence is compared
-        // reverse in twig ?
     }
 
     public function testSuccessfullTaskEdition()
@@ -125,12 +121,11 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $taskToEdit = $taskRepository->findOneBy([]);
+        $userTasks = $testUser->getTasks();
 
         $crawler = $client->request(
             'GET',
-            '/tasks/' . $taskToEdit->getId() . '/edit'
+            '/tasks/' . $userTasks[0]->getId() . '/edit'
         );
         $form = $crawler->selectButton('Modifier')->form([
             'task[title]' => 'Test de titre modifié',

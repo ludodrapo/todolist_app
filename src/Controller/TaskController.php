@@ -4,19 +4,30 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use App\Repository\TaskRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listAction()
+    public function listAction(TaskRepository $taskRepository)
     {
+        $tasks = $taskRepository->findBy(['author' => $this->getUser()]);
+
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            $anonymousTasks = $taskRepository->findBy(['author' => null]);
+            foreach ($anonymousTasks as $anonymousTask) {
+                $tasks[] = $anonymousTask;
+            }
+        }
+
         return $this->render('task/list.html.twig', [
-            'tasks' => $this->getUser()->getTasks()
+            'tasks' => $tasks
         ]);
     }
 
@@ -49,7 +60,10 @@ class TaskController extends AbstractController
      */
     public function editAction(Task $task, Request $request)
     {
-        if ($this->getUser() != $task->getAuthor()) {
+        if (
+            $this->getUser() !== $task->getAuthor() &&
+            !in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+        ) {
             $this->addFlash(
                 'error',
                 "Il n'est pas possible d'accéder à une tâche d'un autre utilisateur."
@@ -80,7 +94,10 @@ class TaskController extends AbstractController
      */
     public function toggleTaskAction(Task $task)
     {
-        if ($this->getUser() != $task->getAuthor()) {
+        if (
+            $this->getUser() !== $task->getAuthor() &&
+            !in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+        ) {
             $this->addFlash(
                 'error',
                 "Il n'est pas possible de valider une tâche d'un autre utilisateur."
@@ -89,9 +106,10 @@ class TaskController extends AbstractController
         } else {
 
             $task->toggle(!$task->isDone());
+
             $this->getDoctrine()->getManager()->flush();
 
-            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+            $this->addFlash('success', sprintf('La tâche "%s" a bien été marquée comme faite.', $task->getTitle()));
 
             return $this->redirectToRoute('task_list');
         }
@@ -102,13 +120,15 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
-        if ($this->getUser() != $task->getAuthor()) {
+        if (
+            $this->getUser() !== $task->getAuthor() &&
+            !in_array("ROLE_ADMIN", $this->getUser()->getRoles())
+        ) {
             $this->addFlash(
                 'error',
                 "Il n'est pas possible de supprimer une tâche d'un autre utilisateur."
             );
             return $this->redirectToRoute('task_list');
-
         } else {
 
             $em = $this->getDoctrine()->getManager();
