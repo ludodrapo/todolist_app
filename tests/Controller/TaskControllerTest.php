@@ -5,13 +5,13 @@ namespace tests\Controller;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskControllerTest extends WebTestCase
 {
     public function testLinkToTasksList()
     {
         $client = static::createClient();
-
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
@@ -24,7 +24,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testDisplaysAllTasks()
+    public function testDisplaysThisUserWithRoleUserTasks()
     {
         $client = static::createClient();
 
@@ -32,15 +32,34 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $tasksCount = count($taskRepository->findAll());
+        $tasksCount = count($testUser->getTasks());
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
         $this->assertCount($tasksCount, $crawler->filter('.thumbnail'));
     }
 
-    public function testDeleteOneTask()
+    public function testDisplaysThisUserWithRoleAdminTasks()
+    {
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $adminUser = $userRepository->findOneByRole('admin');
+        $client->loginUser($adminUser);
+
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        $anonymousTasks = $taskRepository->findBy(['author' => null]);
+
+        $adminTasksCount = count($adminUser->getTasks());
+        $anonymousTasksCount = count($anonymousTasks);
+        $tasksCount = $adminTasksCount + $anonymousTasksCount;
+
+        $crawler = $client->request('GET', '/tasks');
+        $this->assertResponseIsSuccessful();
+        $this->assertCount($tasksCount, $crawler->filter('.thumbnail'));
+    }
+
+    public function testSuccessfullDeleteOneTask()
     {
         $client = static::createClient();
 
@@ -56,7 +75,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testToggleOneTask()
+    public function testSuccessfullToggleOneTask()
     {
         $client = static::createClient();
 
@@ -108,13 +127,8 @@ class TaskControllerTest extends WebTestCase
             'task[content]' => 'Test de contenu'
         ]);
         $client->submit($form);
-
-        $crawler = $client->followRedirect();
+        $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
-        
-        // $this->assertSelectorTextContains('h4 > a', 'Test de titre');
-        // does not work because only the first occurence is compared
-        // reverse in twig ?
     }
 
     public function testSuccessfullTaskEdition()
@@ -125,12 +139,11 @@ class TaskControllerTest extends WebTestCase
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $taskToEdit = $taskRepository->findOneBy([]);
+        $userTasks = $testUser->getTasks();
 
         $crawler = $client->request(
-            'GET', 
-            '/tasks/' . $taskToEdit->getId() . '/edit'
+            'GET',
+            '/tasks/' . $userTasks[0]->getId() . '/edit'
         );
         $form = $crawler->selectButton('Modifier')->form([
             'task[title]' => 'Test de titre modifié',
@@ -138,7 +151,58 @@ class TaskControllerTest extends WebTestCase
         ]);
         $client->click($form);
 
-        $crawler = $client->followRedirect();
+        $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
+    }
+
+    public function testFailureOnTryingToEditTaskOfAnotherUser()
+    {
+        $this->expectException(AccessDeniedException::class);
+
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([]);
+        $client->loginUser($testUser);
+
+        $taskRepository = $this->getContainer()->get(TaskRepository::class);
+        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+
+        $client->CatchExceptions(false);
+        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/edit');
+    }
+
+    public function testFailureOnTryingToToggleTaskOfAnotherUser()
+    {
+        $this->expectException(AccessDeniedException::class);
+
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([]);
+        $client->loginUser($testUser);
+
+        $taskRepository = $this->getContainer()->get(TaskRepository::class);
+        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+
+        $client->CatchExceptions(false);
+        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/toggle');
+    }
+
+    public function testFailureOnTryingToDeleteTaskOfAnotherUser()
+    {
+        $this->expectException(AccessDeniedException::class);
+
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([]);
+        $client->loginUser($testUser);
+
+        $taskRepository = $this->getContainer()->get(TaskRepository::class);
+        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+
+        $client->CatchExceptions(false);
+        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/delete');
     }
 }

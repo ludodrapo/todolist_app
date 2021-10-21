@@ -4,19 +4,30 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use App\Repository\TaskRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listAction()
+    public function listAction(TaskRepository $taskRepository)
     {
+        $tasks = $taskRepository->findBy(['author' => $this->getUser()]);
+
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            $anonymousTasks = $taskRepository->findBy(['author' => null]);
+            foreach ($anonymousTasks as $anonymousTask) {
+                $tasks[] = $anonymousTask;
+            }
+        }
+
         return $this->render('task/list.html.twig', [
-            'tasks' => $this->getDoctrine()->getRepository('App:Task')->findAll()
+            'tasks' => $tasks
         ]);
     }
 
@@ -31,8 +42,8 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setAuthor($this->getUser());
             $em = $this->getDoctrine()->getManager();
-
             $em->persist($task);
             $em->flush();
 
@@ -49,8 +60,13 @@ class TaskController extends AbstractController
      */
     public function editAction(Task $task, Request $request)
     {
-        $form = $this->createForm(TaskType::class, $task);
+        $this->denyAccessUnlessGranted(
+            'CAN_EDIT',
+            $task,
+            "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
+        );
 
+        $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -72,10 +88,25 @@ class TaskController extends AbstractController
      */
     public function toggleTaskAction(Task $task)
     {
+        $this->denyAccessUnlessGranted(
+            'CAN_EDIT',
+            $task,
+            "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
+        );
+
+        //MODIFY THIS CODE
         $task->toggle(!$task->isDone());
+
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        $this->addFlash(
+            'success',
+            sprintf(
+                'Bien joué, %s. La tâche "%s" a bien été marquée comme faite.',
+                ucfirst($this->getUser()->getUsername()),
+                $task->getTitle()
+            )
+        );
 
         return $this->redirectToRoute('task_list');
     }
@@ -85,6 +116,12 @@ class TaskController extends AbstractController
      */
     public function deleteTaskAction(Task $task)
     {
+        $this->denyAccessUnlessGranted(
+            'CAN_EDIT',
+            $task,
+            "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
+        );
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($task);
         $em->flush();
