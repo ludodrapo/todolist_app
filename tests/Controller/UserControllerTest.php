@@ -4,6 +4,7 @@ namespace tests\Controller;
 
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserControllerTest extends WebTestCase
 {
@@ -12,9 +13,8 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy(['roles' => ["ROLE_ADMIN"]]);
-        dd($testUser);
-        $client->loginUser($testUser);
+        $adminUser = $userRepository->findOneByRole('admin');
+        $client->loginUser($adminUser);
 
         $crawler = $client->request('GET', '/');
         $link = $crawler->selectLink('Créer un utilisateur')->link();
@@ -30,9 +30,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([
-            'roles' => []
-        ]);
+        $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/');
@@ -41,16 +39,16 @@ class UserControllerTest extends WebTestCase
 
     public function testUsersPathAccessDeniedToRoleUser()
     {
+        $this->expectException(AccessDeniedException::class);
+
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([
-            'roles' => ['ROLE_USER']
-        ]);
+        $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
+        $client->CatchExceptions(false);
         $client->request('GET', '/users');
-        $this->assertSelectorExists('.alert.alert-danger');
     }
 
     public function testSuccessfullUserCreation()
@@ -58,9 +56,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $adminUser = $userRepository->findOneBy([
-            'roles' => ['ROLE_ADMIN']
-        ]);
+        $adminUser = $userRepository->findOneByRole('admin');
         $client->loginUser($adminUser);
 
         $crawler = $client->request('GET', '/users/create');
@@ -68,8 +64,7 @@ class UserControllerTest extends WebTestCase
             'user[username]' => 'testUser',
             'user[password][first]' => 'password',
             'user[password][second]' => 'password',
-            'user[email]' => 'testUser@gmail.com',
-            'user[roles]' => ['ROLE_USER']
+            'user[email]' => 'testUser@gmail.com'
         ]);
         $client->submit($form);
         $client->followRedirect();
@@ -82,17 +77,14 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
 
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([
-            'roles' => ['ROLE_USER']
-        ]);
-        $adminUser = $userRepository->findOneBy([
-            'roles' => ['ROLE_ADMIN']
-        ]);
+
+        $userToEdit = $userRepository->findOneBy([]);
+        $adminUser = $userRepository->findOneByRole('admin');
         $client->loginUser($adminUser);
 
         $crawler = $client->request(
             'GET', 
-            '/users/' . $testUser->getId() . '/edit'
+            '/users/' . $userToEdit->getId() . '/edit'
         );
         $form = $crawler->selectButton('Modifier')->form([
             'user[username]' => 'modifiedTestUser',

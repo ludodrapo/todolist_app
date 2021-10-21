@@ -2,15 +2,16 @@
 
 namespace tests\Controller;
 
+use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskControllerTest extends WebTestCase
 {
     public function testLinkToTasksList()
     {
         $client = static::createClient();
-
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
@@ -23,7 +24,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testDisplaysThisUserTasks()
+    public function testDisplaysThisUserWithRoleUserTasks()
     {
         $client = static::createClient();
 
@@ -32,6 +33,26 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $tasksCount = count($testUser->getTasks());
+
+        $crawler = $client->request('GET', '/tasks');
+        $this->assertResponseIsSuccessful();
+        $this->assertCount($tasksCount, $crawler->filter('.thumbnail'));
+    }
+
+    public function testDisplaysThisUserWithRoleAdminTasks()
+    {
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $adminUser = $userRepository->findOneByRole('admin');
+        $client->loginUser($adminUser);
+
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        $anonymousTasks = $taskRepository->findBy(['author' => null]);
+
+        $adminTasksCount = count($adminUser->getTasks());
+        $anonymousTasksCount = count($anonymousTasks);
+        $tasksCount = $adminTasksCount + $anonymousTasksCount;
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
@@ -132,5 +153,56 @@ class TaskControllerTest extends WebTestCase
 
         $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
+    }
+
+    public function testFailureOnTryingToEditTaskOfAnotherUser()
+    {
+        $this->expectException(AccessDeniedException::class);
+
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([]);
+        $client->loginUser($testUser);
+
+        $taskRepository = $this->getContainer()->get(TaskRepository::class);
+        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+
+        $client->CatchExceptions(false);
+        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/edit');
+    }
+
+    public function failureOnTryingToToggleTaskOfAnotherUser()
+    {
+        $this->expectException(AccessDeniedException::class);
+
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([]);
+        $client->loginUser($testUser);
+
+        $taskRepository = $this->getContainer()->get(TaskRepository::class);
+        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+
+        $client->CatchExceptions(false);
+        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/toggle');
+    }
+
+    public function failureOnTryingToDeleteTaskOfAnotherUser()
+    {
+        $this->expectException(AccessDeniedException::class);
+
+        $client = static::createClient();
+
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneBy([]);
+        $client->loginUser($testUser);
+
+        $taskRepository = $this->getContainer()->get(TaskRepository::class);
+        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+
+        $client->CatchExceptions(false);
+        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/delete');
     }
 }
