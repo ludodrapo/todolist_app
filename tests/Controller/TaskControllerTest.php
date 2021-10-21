@@ -172,7 +172,7 @@ class TaskControllerTest extends WebTestCase
         $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/edit');
     }
 
-    public function failureOnTryingToToggleTaskOfAnotherUser()
+    public function testFailureOnTryingToToggleTaskOfAnotherUser()
     {
         $this->expectException(AccessDeniedException::class);
 
@@ -189,7 +189,7 @@ class TaskControllerTest extends WebTestCase
         $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/toggle');
     }
 
-    public function failureOnTryingToDeleteTaskOfAnotherUser()
+    public function testFailureOnTryingToDeleteTaskOfAnotherUser()
     {
         $this->expectException(AccessDeniedException::class);
 
