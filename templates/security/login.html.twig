@@ -4,6 +4,10 @@
 	<h1>To Do List App</h1>
 {% endblock %}
 
+{% block header_img %}
+	<img class="slide-image" src="{{ asset('assets/img/todolist_homepage.jpg') }}" alt="todo list image">
+{% endblock %}
+
 {% block body %}
     {% if error %}
         <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
