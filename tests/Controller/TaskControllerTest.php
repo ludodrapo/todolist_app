@@ -88,7 +88,7 @@ class TaskControllerTest extends WebTestCase
         $client->submit($form);
 
         $crawler = $client->followRedirect();
-        $this->assertSelectorExists('.alert.alert-success');
+        $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Marquer non terminée')->form();
         $client->submit($form);
