@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %}
 
+{% block header_title %}
+	<h1>To Do List App</h1>
+{% endblock %}
+
+{% block header_img %}
+	<img class="slide-image" src="{{ asset('assets/img/todolist_homepage.jpg') }}" alt="todo list image">
+{% endblock %}
+
 {% block body %}
     {% if error %}
         <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -12,6 +20,6 @@
         <label for="password">Mot de passe :</label>
         <input type="password" id="password" name="_password" />
 
-        <button class="btn btn-success" type="submit">Se connecter</button>
+        <button class="pull-right btn btn-success" type="submit"><span class="glyphicon glyphicon-log-in"></span> Se connecter</button>
     </form>
 {% endblock %}

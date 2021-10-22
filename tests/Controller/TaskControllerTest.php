@@ -18,7 +18,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/');
 
-        $link = $crawler->selectLink('Consulter la liste des tâches à faire')->link();
+        $link = $crawler->selectLink('Liste des tâches')->link();
         $client->click($link);
         $this->assertRouteSame('task_list');
         $this->assertResponseIsSuccessful();
@@ -88,7 +88,7 @@ class TaskControllerTest extends WebTestCase
         $client->submit($form);
 
         $crawler = $client->followRedirect();
-        $this->assertSelectorExists('.alert.alert-success');
+        $this->assertResponseIsSuccessful();
 
         $form = $crawler->selectButton('Marquer non terminée')->form();
         $client->submit($form);
@@ -107,7 +107,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/tasks');
 
-        $link = $crawler->selectLink('Créer une tâche')->link();
+        $link = $crawler->selectLink('Créer une nouvelle tâche')->link();
         $client->click($link);
         $this->assertRouteSame('task_create');
         $this->assertResponseIsSuccessful();

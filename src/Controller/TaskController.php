@@ -99,14 +99,14 @@ class TaskController extends AbstractController
 
         $this->getDoctrine()->getManager()->flush();
 
-        $this->addFlash(
-            'success',
-            sprintf(
-                'Bien joué, %s. La tâche "%s" a bien été marquée comme faite.',
-                ucfirst($this->getUser()->getUsername()),
-                $task->getTitle()
-            )
-        );
+        // $this->addFlash(
+        //     'success',
+        //     sprintf(
+        //         'Bien joué, %s. La tâche "%s" a bien été marquée comme faite.',
+        //         ucfirst($this->getUser()->getUsername()),
+        //         $task->getTitle()
+        //     )
+        // );
 
         return $this->redirectToRoute('task_list');
     }
