@@ -1,25 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block header_title %}
-	<h1>To Do List App</h1>
+	<h1 class="text-center">My lil' 2Do list</h1>
 {% endblock %}
 
 {% block header_img %}
-	<img class="slide-image" src="{{ asset('assets/img/todolist_homepage.jpg') }}" alt="todo list image">
+	<img class="img-fluid" src="{{ asset('assets/img/todolist_full.jpg') }}" alt="todo list image">
 {% endblock %}
 
 {% block body %}
-    {% if error %}
-        <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+	{% if error %}
+		<div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	{% endif %}
 
-    <form action="{{ path('login_check') }}" method="post">
-        <label for="username">Nom d'utilisateur :</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" />
-
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" name="_password" />
-
-        <button class="pull-right btn btn-success" type="submit"><span class="glyphicon glyphicon-log-in"></span> Se connecter</button>
-    </form>
+	<form action="{{ path('login_check') }}" method="post">
+		<div class="row mb-5 text-center">
+			<div class="form-group col-lg-6 mb-3">
+				<label for="username">Nom d'utilisateur :</label>
+				<input type="text" id="username" name="_username" value="{{ last_username }}"/>
+			</div>
+			<div class="form-group col-lg-6">
+				<label for="password">Mot de passe :</label>
+				<input type="password" id="password" name="_password"/>
+			</div>
+		</div>
+		<div class="row">
+			<button class="btn btn-success" type="submit">Se connecter
+				<i class="bi bi-box-arrow-in-right"></i>
+			</button>
+		</div>
+	</form>
 {% endblock %}

@@ -1,19 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block header_title %}
-	<h1>Bienvenue sur Todo List
-		{{ app.user.username|capitalize }},
-		<br/>l'application vous permettant de gérer l'ensemble de vos tâches sans effort !</h1>
+	<div class="m-5">
+		<h1 class="text-center">Bienvenue
+			{{ app.user.username|capitalize }}
+			!
+		</h1>
+	</div>
 {% endblock %}
 
 {% block header_img %}
-	<img class="slide-image" src="{{ asset('assets/img/todolist_homepage.jpg') }}" alt="todo list image">
+	<img class="img-fluid" src="{{ asset('assets/img/todolist_full.jpg') }}" alt="todo list image">
 {% endblock %}
 
 {% block body %}
 
 	<div class="row">
-		<a href="{{ path('task_create') }}" class="btn btn-success">Créer une nouvelle tâche</a>
-		{# <a href="{{ path('task_list') }}" class="btn btn-info">Consulter la liste des tâches</a> #}
+		<a href="{{ path('task_create') }}" class="btn btn-primary">Créer une nouvelle tâche</a>
 	</div>
 {% endblock %}
