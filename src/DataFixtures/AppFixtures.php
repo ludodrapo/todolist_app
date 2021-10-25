@@ -36,23 +36,31 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $tasks = [
-            'acheter du pain',
-            'déposer costumes chez le teinturier',
-            'faire double des clés',
-            'faire les courses',
-            'réserver les vacances',
-            'appeler mamie',
-            'faire les vitres',
-            'finir le projet 8',
-            'postuler chez OpenClassRooms',
-            'faire le ménage dans les papiers',
-            'classer les petites pièces de Lego'
+            'Acheter du pain',
+            'Déposer costumes chez le teinturier',
+            'Faire double des clés',
+            'Faire les courses',
+            'Réserver les vacances',
+            'Appeler mamie',
+            'Faire les vitres',
+            'Finir le projet 8',
+            'Postuler chez OpenClassRooms',
+            'Faire le ménage dans les papiers',
+            'Classer les petites pièces de Lego'
+        ];
+
+        $details = [
+            "Penser à bien s'organiser avant et prévoir tout ce qu'il faut pour ne pas se retrouver le bec dans l'eau.",
+            "Bien dire à tout le monde qu'on va le faire bientôt, histoire de s'engager à la réalisation de cette tâche.",
+            "Prendre son temps pour la réalisation pour ne pas faire d'erreur et ne pas avoir à tout refaire.",
+            "Surtout ne rien dire à personne pour, en cas d'échec cuisant,
+            être encore considéré en tant que tel et ne pas être la victime de quolifichets !"
         ];
 
         for ($i = 1; $i <= 10; $i++) {
             $newTask = new Task();
-            $newTask->setTitle('Tâche n°' . $i);
-            $newTask->setContent($tasks[array_rand($tasks)]);
+            $newTask->setTitle($tasks[array_rand($tasks)]);
+            $newTask->setContent($details[array_rand($details)]);
             $manager->persist($newTask);
         }
 
@@ -68,8 +76,8 @@ class AppFixtures extends Fixture
 
             for ($j = 1; $j <= 3; $j++) {
                 $newTask = new Task();
-                $newTask->setTitle('Tâche n°' . $index . ' pour ' . $newUser->getUsername());
-                $newTask->setContent($tasks[array_rand($tasks)]);
+                $newTask->setTitle($tasks[array_rand($tasks)]);
+                $newTask->setContent($details[array_rand($details)]);
                 $newTask->setAuthor($newUser);
                 $manager->persist($newTask);
                 $index++;

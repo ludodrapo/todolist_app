@@ -94,9 +94,7 @@ class TaskController extends AbstractController
             "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
         );
 
-        //MODIFY THIS CODE
         $task->toggle(!$task->isDone());
-
         $this->getDoctrine()->getManager()->flush();
 
         // $this->addFlash(

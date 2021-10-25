@@ -1,0 +1,39 @@
+<div class="list-group">
+	<div class="bg-primary list-group-item list-group-item-action flex-column align-items-start">
+		<div class="d-flex w-100 justify-content-between my-3">
+			<h5>
+				<strong>
+					<i class="bi bi-forward"></i>
+					{{ task.title }}
+				</strong>
+			</h5>
+			<div class="row">
+				{% if task.isDone %}
+					<form class="col" action="{{ path('task_toggle', {'id' : task.id }) }}">
+						<button id="task-undone-btn" class="btn btn-success btn-sm">
+							<i class="bi bi-recycle"></i>
+						</button>
+					</form>
+				{% else %}
+					<form class="col" action="{{ path('task_toggle', {'id' : task.id }) }}">
+						<button id="task-done-btn" class="btn btn-success btn-sm">
+							<i class="bi bi-check-lg"></i>
+						</button>
+					</form>
+					<form class="col" action="{{ path('task_edit', {'id' : task.id }) }}">
+						<button id="edit-btn" class="btn btn-success btn-sm">
+							<i class="bi bi-pencil-square"></i>
+						</button>
+					</form>
+				{% endif %}
+				<form class="col" action="{{ path('task_delete', {'id' : task.id }) }}">
+					<button id="delete-btn" class="btn btn-danger btn-sm">
+						<i class="bi bi-trash"></i>
+					</button>
+				</form>
+			</div>
+		</div>
+
+		<p class="mb-3">{{ task.content }}</p>
+	</div>
+</div>

@@ -38,10 +38,6 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            // if ($form->get('roles') === true) {
-            //     $user->setRoles(["USER_ADMIN"]);
-            // }
             
             $user->setPassword(
                 $hasher->hashPassword(
