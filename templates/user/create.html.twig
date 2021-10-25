@@ -4,14 +4,15 @@
 	<h1>Créer un utilisateur</h1>
 {% endblock %}
 
-{% block header_img %}{% endblock %}
-
 {% block body %}
-	<div class="row">
-		{{ form_start(form, {'action' : path('user_create')}) }}
-		{{ form_widget(form) }}
 
+	{{ form_start(form, {'action' : path('user_create')}) }}
+
+	{% include "/user/partials/_userForm.html.twig" %}
+
+	<div class="row">
 		<button type="submit" class="btn btn-success pull-right">Ajouter</button>
-		{{ form_end(form) }}
 	</div>
+
+	{{ form_end(form) }}
 {% endblock %}

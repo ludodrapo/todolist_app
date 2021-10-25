@@ -10,118 +10,46 @@
 
 		<title>To Do List app</title>
 
-		{# <!-- Bootstrap Core CSS -->
-		<link
-		href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
-
-		<!-- Custom CSS -->
-		<link href="{{ asset('assets/css/shop-homepage.css') }}" rel="stylesheet"> #}
-
 		{% block stylesheets %}
-			{# 'app' must match the first argument to addEntry() in webpack.config.js #}
 			{{ encore_entry_link_tags('app') }}
-
-			<!-- Renders a link tag (if your module requires any CSS)
-			                 <link rel="stylesheet" href="/build/app.css"> -->
 		{% endblock %}
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
-
-			<!-- Renders app.js & a webpack runtime.js file
-			                <script src="/build/runtime.js" defer></script>
-			                <script src="/build/app.js" defer></script>
-			                See note below about the "defer" attribute -->
 		{% endblock %}
 	</head>
 
 	<body>
-		<nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="{{ path('homepage') }}">To Do List app</a>
-					<img src="{{ asset('assets/img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
-				</div>
-				{% if app.user %}
-					<a href="{{ path('logout') }}" class="pull-right btn btn-danger">
-						Se déconnecter
-						<span class="glyphicon glyphicon-log-out"></span>
-					</a>
-				{% endif %}
-			</div>
-		</nav>
+
+		{% include "/shared/_navbar.html.twig" %}
 
 		<!-- Page Content -->
-		<div class="container">
-			<div class="row">
-				{% if is_granted('ROLE_ADMIN') %}
-					<a href="{{ path('user_create') }}" class="btn btn-primary">Créer un utilisateur</a>
-					<a href="{{ path('user_list') }}" class="btn btn-primary">Gérer les utilisateurs</a>
-				{% endif %}
+		<div class="container" style="margin-top: 110px;">
 
-				<a href="{{ path('task_list') }}" class="pull-right btn btn-primary">Liste des tâches</a>
 
-				{# Remains from the original code #}
-			{# {% if app.user %}
-												<a href="{{ path('logout') }}" class="pull-right btn btn-danger">
-													Se déconnecter
-													<span class="glyphicon glyphicon-log-out"></span>
-												</a>
-											{% endif %} #}
-
-				{# {% if not app.user and 'login' != app.request.attributes.get('_route') %}
-																	<a href="{{ path('login') }}" class="btn btn-success">
-																		Se connecter
-																		<span class="glyphicon glyphicon-log-in"></span>
-																	</a>
-																{% endif %} #}
-			</div>
-
-			<div class="row">
-				<div class="col-md-12">
-					{% for flash_message in app.session.flashBag.get('success') %}
-						<div class="alert alert-success" role="alert">
-							<strong>Superbe !</strong>
-							{{ flash_message }}
-						</div>
-					{% endfor %}
-
-					{% for flash_message in app.session.flashBag.get('error') %}
-						<div class="alert alert-danger" role="alert">
-							<strong>Oops !</strong>
-							{{ flash_message }}
-						</div>
-					{% endfor %}
-
-					{% block header_title %}{% endblock %}
-					{% block header_img %}{% endblock %}
+			<div class="mb-5"> {% block header_title %}{% endblock %}
 				</div>
-			</div>
-
-			<br/>
-
-			<div class="row">
-				<div class="col-md-12"> {% block body %}{% endblock %}
+				<div class="mb-5"> {% block header_img %}{% endblock %}
 					</div>
-				</div>
-			</div>
-			<!-- /.container -->
 
-			<div class="container">
+					<!-- / flash message -->
 
-				<hr>
-				<footer>
-					<div class="row">
-						<div class="col-lg-12">
-							<p class="pull-right">Copyright &copy; OpenClassrooms</p>
+					{% include "/shared/_flashes.html.twig" %}
+
+					<br/>
+
+					<div class="container"> {% block body %}{% endblock %}
 						</div>
+
+						<hr>
+						<footer>
+							<div class="row">
+								<div class="col-lg-12">
+									<p class="text-center">Copyright &copy; OpenClassrooms</p>
+								</div>
+							</div>
+						</footer>
+
 					</div>
-				</footer>
-
-			</div>
-
-			<script src="{{ asset('assets/js/jquery.js') }}"></script>
-			<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-		</body>
-	</html>
-</body></html>
+				</body>
+			</html>

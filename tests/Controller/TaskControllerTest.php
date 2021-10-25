@@ -36,7 +36,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
-        $this->assertCount($tasksCount, $crawler->filter('.thumbnail'));
+        $this->assertCount($tasksCount, $crawler->filter('.list-group-item'));
     }
 
     public function testDisplaysThisUserWithRoleAdminTasks()
@@ -56,7 +56,7 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
-        $this->assertCount($tasksCount, $crawler->filter('.thumbnail'));
+        $this->assertCount($tasksCount, $crawler->filter('.list-group-item'));
     }
 
     public function testSuccessfullDeleteOneTask()
@@ -68,7 +68,7 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/tasks');
-        $form = $crawler->selectButton('Supprimer')->form();
+        $form = $crawler->selectButton('delete-btn')->form();
         $client->submit($form);
 
         $client->followRedirect();
@@ -84,13 +84,13 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $crawler = $client->request('GET', '/tasks');
-        $form = $crawler->selectButton('Marquer comme faite')->form();
+        $form = $crawler->selectButton('task-done-btn')->form();
         $client->submit($form);
 
         $crawler = $client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Marquer non terminée')->form();
+        $form = $crawler->selectButton('task-undone-btn')->form();
         $client->submit($form);
 
         $client->followRedirect();
