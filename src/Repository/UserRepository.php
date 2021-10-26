@@ -25,7 +25,7 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * To get one user based on the role he has
-     * This method only needs 'admin' or 'user'
+     * This method only needs 'admin' for now
      * @param string $role
      * @return void
      */
@@ -38,8 +38,8 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('roles', $role)
             ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
+            ->getSingleResult();
 
-        return $result[0];
+        return $result;
     }
 }

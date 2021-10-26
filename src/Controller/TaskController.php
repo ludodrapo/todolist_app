@@ -63,7 +63,7 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted(
             'CAN_EDIT',
             $task,
-            "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
+            "Vous n'êtes pas autorisé(e) à modifier à cette ressource."
         );
 
         $form = $this->createForm(TaskType::class, $task);
@@ -91,20 +91,11 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted(
             'CAN_EDIT',
             $task,
-            "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
+            "Vous n'êtes pas autorisé(e) à modifier cette ressource."
         );
 
         $task->toggle(!$task->isDone());
         $this->getDoctrine()->getManager()->flush();
-
-        // $this->addFlash(
-        //     'success',
-        //     sprintf(
-        //         'Bien joué, %s. La tâche "%s" a bien été marquée comme faite.',
-        //         ucfirst($this->getUser()->getUsername()),
-        //         $task->getTitle()
-        //     )
-        // );
 
         return $this->redirectToRoute('task_list');
     }
@@ -117,7 +108,7 @@ class TaskController extends AbstractController
         $this->denyAccessUnlessGranted(
             'CAN_EDIT',
             $task,
-            "Vous n'êtes pas autorisé(e) à accéder à cette ressource."
+            "Vous n'êtes pas autorisé(e) à effacer cette ressource."
         );
 
         $em = $this->getDoctrine()->getManager();

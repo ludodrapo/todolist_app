@@ -18,4 +18,16 @@ class TaskRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Task::class);
     }
+
+    public function findOneOfAnotherUser($user)
+    {
+        $task = $this->createQueryBuilder('t')
+            ->andWhere('t.author != :user')
+            ->setParameter('user', $user)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleResult();
+        
+            return $task;
+    }
 }
