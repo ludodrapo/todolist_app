@@ -1,6 +1,6 @@
 <?php
 
-namespace tests\Controller;
+namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
 use App\Tests\Controller\AuthenticationTrait;

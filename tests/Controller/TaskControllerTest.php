@@ -1,14 +1,11 @@
 <?php
 
-namespace tests\Controller;
+namespace App\Tests\Controller;
 
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Tests\Controller\AuthenticationTrait;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
