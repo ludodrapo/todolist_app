@@ -4,8 +4,8 @@ namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TaskType extends AbstractType
 {
@@ -18,7 +18,6 @@ class TaskType extends AbstractType
             ->add('content', TextareaType::class, [
                 'label' => 'Détails de la tâche'
             ])
-            //->add('author') ===> must be the user authenticated
         ;
     }
 }
