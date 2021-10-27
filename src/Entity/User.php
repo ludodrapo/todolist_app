@@ -13,8 +13,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 /**
  * @ORM\Entity
  * @ORM\Table("user")
- * @UniqueEntity("email")
- * @UniqueEntity("username")
+ * @UniqueEntity("email", message="Cet email est déjà utilisé.")
+ * @UniqueEntity("username", message="Ce nom d'utilisateur est déjà utilisé.")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

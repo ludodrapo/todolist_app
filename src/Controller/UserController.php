@@ -3,13 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserType;
+use App\Handler\CreateUserHandler;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
@@ -29,25 +27,11 @@ class UserController extends AbstractController
      */
     public function createAction(
         Request $request,
-        UserPasswordHasherInterface $hasher,
-        EntityManagerInterface $manager
+        CreateUserHandler $userHandler
     ) {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            
-            $user->setPassword(
-                $hasher->hashPassword(
-                    $user,
-                    $user->getPassword()
-                )
-            );
-
-            $manager->persist($user);
-            $manager->flush();
+        if ($userHandler->handle($request, $user)) {
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
@@ -56,7 +40,7 @@ class UserController extends AbstractController
 
         return $this->render(
             'user/create.html.twig',
-            ['form' => $form->createView()]
+            ['form' => $userHandler->createView()]
         );
     }
 
@@ -66,22 +50,10 @@ class UserController extends AbstractController
     public function editAction(
         User $user,
         Request $request,
-        UserPasswordHasherInterface $hasher,
-        EntityManagerInterface $manager
+        CreateUserHandler $userHandler
     ) {
-        $form = $this->createForm(UserType::class, $user);
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $hasher->hashPassword(
-                    $user,
-                    $user->getPassword()
-                )
-            );
-
-            $manager->flush();
+        if ($userHandler->handle($request, $user)) {
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
@@ -91,7 +63,7 @@ class UserController extends AbstractController
         return $this->render(
             'user/edit.html.twig',
             [
-                'form' => $form->createView(),
+                'form' => $userHandler->createView(),
                 'user' => $user
             ]
         );
