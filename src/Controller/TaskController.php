@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
-use App\Repository\TaskRepository;
-use App\Handler\CreateTaskHandler;
 use App\Handler\EditTaskHandler;
+use App\Handler\CreateTaskHandler;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -18,11 +21,14 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listAction(TaskRepository $taskRepository)
+    public function listAction(TaskRepository $taskRepository): Response
     {
         $tasks = $taskRepository->findBy(['author' => $this->getUser()]);
 
-        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (in_array("ROLE_ADMIN", $user->getRoles())) {
             $anonymousTasks = $taskRepository->findBy(['author' => null]);
             foreach ($anonymousTasks as $anonymousTask) {
                 $tasks[] = $anonymousTask;
@@ -40,7 +46,7 @@ class TaskController extends AbstractController
     public function createAction(
         Request $request,
         CreateTaskHandler $taskHandler
-    ) {
+    ): Response {
         $task = new Task();
 
         if ($taskHandler->handle($request, $task)) {
@@ -63,7 +69,7 @@ class TaskController extends AbstractController
         Task $task,
         Request $request,
         EditTaskHandler $taskHandler
-    ) {
+    ): Response {
         $this->denyAccessUnlessGranted(
             'CAN_EDIT',
             $task,
@@ -87,7 +93,7 @@ class TaskController extends AbstractController
     public function toggleTaskAction(
         Task $task,
         EntityManagerInterface $entityManager
-    ) {
+    ): RedirectResponse {
         $this->denyAccessUnlessGranted(
             'CAN_EDIT',
             $task,
@@ -106,7 +112,7 @@ class TaskController extends AbstractController
     public function deleteTaskAction(
         Task $task,
         EntityManagerInterface $entityManager
-    ) {
+    ): RedirectResponse {
         $this->denyAccessUnlessGranted(
             'CAN_EDIT',
             $task,

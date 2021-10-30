@@ -14,7 +14,7 @@ class LoginControllerTest extends WebTestCase
 {
     use AuthenticationTrait;
 
-    public function testDisplaysLoginPage()
+    public function testDisplaysLoginPage(): void
     {
         $client = static::createClient();
 
@@ -24,7 +24,7 @@ class LoginControllerTest extends WebTestCase
         $this->assertRouteSame('login');
     }
 
-    public function testLoginCheckWithUnknownUsername()
+    public function testLoginCheckWithUnknownUsername(): void
     {
         $client = static::createClient();
 
@@ -44,7 +44,7 @@ class LoginControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-danger');
     }
 
-    public function testLoginCheckWithBadPassword()
+    public function testLoginCheckWithBadPassword(): void
     {
         $client = static::createClient();
 
@@ -64,7 +64,7 @@ class LoginControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-danger');
     }
 
-    public function testSuccessfullLogin()
+    public function testSuccessfullLogin(): void
     {
         $client = static::createClient();
 
@@ -82,7 +82,7 @@ class LoginControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Bienvenue');
     }
 
-    public function testSuccessfullLogout()
+    public function testSuccessfullLogout(): void
     {
         $client = static::createAuthenticatedClient();
 

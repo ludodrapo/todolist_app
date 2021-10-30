@@ -1,10 +1,20 @@
 <?php
 
+/*
+ * This file is part of the ToDoList App
+ * OpenClassRooms PHP/Symfony project 8
+ * 
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Task;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @method Task|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,15 +29,13 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
-    public function findOneOfAnotherUser($user)
+    public function findOneOfAnotherUser(User $user): Task
     {
-        $task = $this->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->andWhere('t.author != :user')
             ->setParameter('user', $user)
             ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult();
-        
-            return $task;
     }
 }

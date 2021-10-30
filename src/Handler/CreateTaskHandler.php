@@ -3,23 +3,25 @@
 namespace App\Handler;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Form\TaskType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
 /**
  * Class CreateTaskHandler
+ *
  * @package App\Handler
  */
 class CreateTaskHandler extends AbstractHandler
 {
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface $entityManager
      */
     private $entityManager;
 
     /**
-     * @param Security $security
+     * @var Security $security
      */
     private $security;
 
@@ -48,7 +50,12 @@ class CreateTaskHandler extends AbstractHandler
      */
     protected function process($task): void
     {
-        $task->setAuthor($this->security->getUser());
+        /** @var User $user */
+        $user = $this->security->getUser();
+
+        /** @var Task $task */
+        $task->setAuthor($user);
+
         $this->entityManager->persist($task);
         $this->entityManager->flush();
     }

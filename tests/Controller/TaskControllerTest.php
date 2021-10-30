@@ -2,6 +2,8 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Task;
+use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use App\Tests\Controller\AuthenticationTrait;
@@ -10,13 +12,14 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class TaskControllerTest
+ *
  * @package tests\Controller
  */
 class TaskControllerTest extends WebTestCase
 {
     use AuthenticationTrait;
 
-    public function testLinkToTasksList()
+    public function testLinkToTasksList(): void
     {
         $client = static::createAuthenticatedClient();
 
@@ -28,7 +31,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testDisplaysThisUserWithRoleUserTasks()
+    public function testDisplaysThisUserWithRoleUserTasks(): void
     {
         $client = static::createClient();
 
@@ -50,7 +53,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertCount($tasksCount, $crawler->filter('.list-group-item'));
     }
 
-    public function testDisplaysThisUserWithRoleAdminTasks()
+    public function testDisplaysThisUserWithRoleAdminTasks(): void
     {
         $client = static::createClient();
 
@@ -62,10 +65,10 @@ class TaskControllerTest extends WebTestCase
 
         $client->loginUser($adminUser);
 
-        /** @var TaskRepository $taskrepository */
+        /** @var TaskRepository $taskRepository */
         $taskRepository = static::getContainer()->get(TaskRepository::class);
 
-        /** @var Task $anonymousTask */
+        /** @var Array $anonymousTasks */
         $anonymousTasks = $taskRepository->findBy(['author' => null]);
 
         $tasksCount = count($adminUser->getTasks()) + count($anonymousTasks);
@@ -75,7 +78,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertCount($tasksCount, $crawler->filter('.list-group-item'));
     }
 
-    public function testSuccessfullDeleteOneTask()
+    public function testSuccessfullDeleteOneTask(): void
     {
         $client = static::createAuthenticatedClient();
 
@@ -87,7 +90,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testSuccessfullToggleOneTask()
+    public function testSuccessfullToggleOneTask(): void
     {
         $client = static::createAuthenticatedClient();
 
@@ -105,7 +108,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testLinkToTaskCreationPage()
+    public function testLinkToTaskCreationPage(): void
     {
         $client = static::createAuthenticatedClient();
 
@@ -117,7 +120,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testSuccessfullTaskCreation()
+    public function testSuccessfullTaskCreation(): void
     {
         $client = static::createAuthenticatedClient();
 
@@ -134,7 +137,7 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testSuccessfullTaskEdition()
+    public function testSuccessfullTaskEdition(): void
     {
         $client = static::createClient();
 
@@ -164,20 +167,23 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testFailureOnTryingToEditTaskOfAnotherUser()
+    public function testFailureOnTryingToEditTaskOfAnotherUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        /** @var TaskRepository $taskrepository */
+        /** @var TaskRepository $taskRepository */
         $taskRepository = static::getContainer()->get(TaskRepository::class);
 
-        /** @var Task $task */
+        /** @var Task $anotherUsersTask */
         $anotherUsersTask = $taskRepository->findOneOfAnotherUser($testUser);
 
         $client->CatchExceptions(false);
@@ -188,20 +194,24 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
-    public function testFailureOnTryingToToggleTaskOfAnotherUser()
+    public function testFailureOnTryingToToggleTaskOfAnotherUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
+
         $client->loginUser($testUser);
 
-        /** @var TaskRepository $taskrepository */
+        /** @var TaskRepository $taskRepository */
         $taskRepository = static::getContainer()->get(TaskRepository::class);
 
-        /** @var Task $task */
+        /** @var Task $anotherUsersTask */
         $anotherUsersTask = $taskRepository->findOneOfAnotherUser($testUser);
 
         $client->CatchExceptions(false);
@@ -212,20 +222,24 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
-    public function testFailureOnTryingToDeleteTaskOfAnotherUser()
+    public function testFailureOnTryingToDeleteTaskOfAnotherUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
+
         $client->loginUser($testUser);
 
-        /** @var TaskRepository $taskrepository */
+        /** @var TaskRepository $taskRepository */
         $taskRepository = static::getContainer()->get(TaskRepository::class);
 
-        /** @var Task $task */
+        /** @var Task $anotherUsersTask */
         $anotherUsersTask = $taskRepository->findOneOfAnotherUser($testUser);
 
         $client->CatchExceptions(false);

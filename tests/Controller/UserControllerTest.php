@@ -16,7 +16,7 @@ class UserControllerTest extends WebTestCase
 {
     use AuthenticationTrait;
 
-    public function testLinkToUserCreationPageWithRoleAdminReturnsOk()
+    public function testLinkToUserCreationPageWithRoleAdminReturnsOk(): void
     {
         $client = static::createAuthenticatedWithRoleAdminClient();
 
@@ -29,7 +29,7 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNoLinkToUsersPathWithRoleUser()
+    public function testNoLinkToUsersPathWithRoleUser(): void
     {
         $client = static::createAuthenticatedClient();
 
@@ -38,7 +38,7 @@ class UserControllerTest extends WebTestCase
         $this->assertSelectorTextNotContains('a', 'Créer un utilisateur');
     }
 
-    public function testUsersPathAccessDeniedToRoleUser()
+    public function testUsersPathAccessDeniedToRoleUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
@@ -49,7 +49,7 @@ class UserControllerTest extends WebTestCase
         $client->request('GET', '/users');
     }
 
-    public function testSuccessfullUserCreation()
+    public function testSuccessfullUserCreation(): void
     {
         $client = static::createAuthenticatedWithRoleAdminClient();
 
@@ -69,7 +69,7 @@ class UserControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testSuccessfullUserEdition()
+    public function testSuccessfullUserEdition(): void
     {
         $client = static::createAuthenticatedWithRoleAdminClient();
 

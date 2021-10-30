@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AbstractHandler
+ *
  * @package App\Handler
  */
 abstract class AbstractHandler implements HandlerInterface
@@ -29,9 +30,9 @@ abstract class AbstractHandler implements HandlerInterface
     abstract protected function getFormType(): string;
 
     /**
-     * @param $data
+     * @param object $data
      */
-    abstract protected function process($data): void;
+    abstract protected function process(object $data): void;
 
     /**
      * @required
@@ -47,7 +48,6 @@ abstract class AbstractHandler implements HandlerInterface
      */
     public function handle(Request $request, object $data, array $options = []): bool
     {
-
         $this->form = $this->formFactory->create(
             $this->getFormType(),
             $data,

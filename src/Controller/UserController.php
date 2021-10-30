@@ -8,13 +8,14 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AbstractController
 {
     /**
      * @Route("/users", name="user_list")
      */
-    public function listAction(UserRepository $userRepository)
+    public function listAction(UserRepository $userRepository): Response
     {
         return $this->render(
             'user/list.html.twig',
@@ -28,7 +29,7 @@ class UserController extends AbstractController
     public function createAction(
         Request $request,
         CreateUserHandler $userHandler
-    ) {
+    ): Response {
         $user = new User();
 
         if ($userHandler->handle($request, $user)) {
@@ -51,7 +52,7 @@ class UserController extends AbstractController
         User $user,
         Request $request,
         CreateUserHandler $userHandler
-    ) {
+    ): Response {
 
         if ($userHandler->handle($request, $user)) {
 

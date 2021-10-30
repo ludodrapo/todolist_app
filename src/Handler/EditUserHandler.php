@@ -48,6 +48,7 @@ class EditUserHandler extends AbstractHandler
      */
     protected function process($user): void
     {
+        /** @var User $user */
         $user->setPassword(
             $this->hasher->hashPassword(
                 $user,

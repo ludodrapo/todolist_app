@@ -6,10 +6,10 @@ use App\Entity\User;
 use App\Form\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * Class CreateUserHandler
+ *
  * @package App\Handler
  */
 class CreateUserHandler extends AbstractHandler
@@ -49,6 +49,7 @@ class CreateUserHandler extends AbstractHandler
      */
     protected function process($user): void
     {
+        /** @var User $user */
         $user->setPassword(
             $this->hasher->hashPassword(
                 $user,
