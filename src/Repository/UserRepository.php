@@ -16,7 +16,6 @@ class UserRepository extends ServiceEntityRepository
 {
     /**
      * UserRepository constructor
-     * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry)
     {
@@ -25,21 +24,17 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * To get one user based on the role he has
-     * This method only needs 'admin' or 'user'
-     * @param string $role
-     * @return void
+     * This method only needs 'admin' for now
      */
-    public function findOneByRole(string $role)
+    public function findOneByRole(string $role): User
     {
         $role = '"ROLE_' . strtoupper($role) . '"';
 
-        $result = $this->createQueryBuilder('q')
+        return $this->createQueryBuilder('q')
             ->andWhere('JSON_CONTAINS(q.roles, :roles) = 1')
             ->setParameter('roles', $role)
             ->setMaxResults(1)
             ->getQuery()
-            ->getResult();
-
-        return $result[0];
+            ->getSingleResult();
     }
 }

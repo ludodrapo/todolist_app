@@ -1,20 +1,27 @@
 <?php
 
-namespace tests\Controller;
+namespace App\Tests\Controller;
 
+use App\Entity\Task;
+use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
+use App\Tests\Controller\AuthenticationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * Class TaskControllerTest
+ *
+ * @package tests\Controller
+ */
 class TaskControllerTest extends WebTestCase
 {
-    public function testLinkToTasksList()
+    use AuthenticationTrait;
+
+    public function testLinkToTasksList(): void
     {
-        $client = static::createClient();
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/');
 
@@ -24,48 +31,56 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testDisplaysThisUserWithRoleUserTasks()
+    public function testDisplaysThisUserWithRoleUserTasks(): void
     {
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
+
         $client->loginUser($testUser);
 
         $tasksCount = count($testUser->getTasks());
 
+        // dd($client->getContainer()->get('session'));
+
         $crawler = $client->request('GET', '/tasks');
+
         $this->assertResponseIsSuccessful();
         $this->assertCount($tasksCount, $crawler->filter('.list-group-item'));
     }
 
-    public function testDisplaysThisUserWithRoleAdminTasks()
+    public function testDisplaysThisUserWithRoleAdminTasks(): void
     {
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $adminUser */
         $adminUser = $userRepository->findOneByRole('admin');
+
         $client->loginUser($adminUser);
 
+        /** @var TaskRepository $taskRepository */
         $taskRepository = static::getContainer()->get(TaskRepository::class);
+
+        /** @var Array $anonymousTasks */
         $anonymousTasks = $taskRepository->findBy(['author' => null]);
 
-        $adminTasksCount = count($adminUser->getTasks());
-        $anonymousTasksCount = count($anonymousTasks);
-        $tasksCount = $adminTasksCount + $anonymousTasksCount;
+        $tasksCount = count($adminUser->getTasks()) + count($anonymousTasks);
 
         $crawler = $client->request('GET', '/tasks');
         $this->assertResponseIsSuccessful();
         $this->assertCount($tasksCount, $crawler->filter('.list-group-item'));
     }
 
-    public function testSuccessfullDeleteOneTask()
+    public function testSuccessfullDeleteOneTask(): void
     {
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/tasks');
         $form = $crawler->selectButton('delete-btn')->form();
@@ -75,13 +90,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testSuccessfullToggleOneTask()
+    public function testSuccessfullToggleOneTask(): void
     {
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/tasks');
         $form = $crawler->selectButton('task-done-btn')->form();
@@ -97,13 +108,9 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testLinkToTaskCreationPage()
+    public function testLinkToTaskCreationPage(): void
     {
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/tasks');
 
@@ -113,30 +120,33 @@ class TaskControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testSuccessfullTaskCreation()
+    public function testSuccessfullTaskCreation(): void
     {
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/tasks/create');
+
         $form = $crawler->selectButton('Ajouter')->form([
             'task[title]' => 'Test de titre',
             'task[content]' => 'Test de contenu'
         ]);
+
         $client->submit($form);
         $client->followRedirect();
+
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testSuccessfullTaskEdition()
+    public function testSuccessfullTaskEdition(): void
     {
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
+
         $client->loginUser($testUser);
 
         $userTasks = $testUser->getTasks();
@@ -145,64 +155,98 @@ class TaskControllerTest extends WebTestCase
             'GET',
             '/tasks/' . $userTasks[0]->getId() . '/edit'
         );
+
         $form = $crawler->selectButton('Modifier')->form([
             'task[title]' => 'Test de titre modifié',
             'task[content]' => 'Test de contenu modifié'
         ]);
-        $client->click($form);
 
+        $client->click($form);
         $client->followRedirect();
+
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testFailureOnTryingToEditTaskOfAnotherUser()
+    public function testFailureOnTryingToEditTaskOfAnotherUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
         $client->loginUser($testUser);
 
-        $taskRepository = $this->getContainer()->get(TaskRepository::class);
-        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+        /** @var TaskRepository $taskRepository */
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+
+        /** @var Task $anotherUsersTask */
+        $anotherUsersTask = $taskRepository->findOneOfAnotherUser($testUser);
 
         $client->CatchExceptions(false);
-        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/edit');
+
+        $client->request(
+            'GET',
+            '/tasks/' . $anotherUsersTask->getId() . '/edit'
+        );
     }
 
-    public function testFailureOnTryingToToggleTaskOfAnotherUser()
+    public function testFailureOnTryingToToggleTaskOfAnotherUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
+
         $client->loginUser($testUser);
 
-        $taskRepository = $this->getContainer()->get(TaskRepository::class);
-        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+        /** @var TaskRepository $taskRepository */
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+
+        /** @var Task $anotherUsersTask */
+        $anotherUsersTask = $taskRepository->findOneOfAnotherUser($testUser);
 
         $client->CatchExceptions(false);
-        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/toggle');
+
+        $client->request(
+            'GET',
+            '/tasks/' . $anotherUsersTask->getId() . '/toggle'
+        );
     }
 
-    public function testFailureOnTryingToDeleteTaskOfAnotherUser()
+    public function testFailureOnTryingToDeleteTaskOfAnotherUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
         $client = static::createClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
         $testUser = $userRepository->findOneBy([]);
+
         $client->loginUser($testUser);
 
-        $taskRepository = $this->getContainer()->get(TaskRepository::class);
-        $anonymousTask = $taskRepository->findOneBy(['author' => null]);
+        /** @var TaskRepository $taskRepository */
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+
+        /** @var Task $anotherUsersTask */
+        $anotherUsersTask = $taskRepository->findOneOfAnotherUser($testUser);
 
         $client->CatchExceptions(false);
-        $client->request('GET', '/tasks/' . $anonymousTask->getId() . '/delete');
+
+        $client->request(
+            'GET',
+            '/tasks/' . $anotherUsersTask->getId() . '/delete'
+        );
     }
 }

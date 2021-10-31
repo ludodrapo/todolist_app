@@ -1,20 +1,24 @@
 <?php
 
-namespace tests\Controller;
+namespace App\Tests\Controller;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Tests\Controller\AuthenticationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * Class UserControllerTest
+ * @package tests\Controller
+ */
 class UserControllerTest extends WebTestCase
 {
-    public function testLinkToUserCreationPageWithRoleAdminReturnsOk()
-    {
-        $client = static::createClient();
+    use AuthenticationTrait;
 
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $adminUser = $userRepository->findOneByRole('admin');
-        $client->loginUser($adminUser);
+    public function testLinkToUserCreationPageWithRoleAdminReturnsOk(): void
+    {
+        $client = static::createAuthenticatedWithRoleAdminClient();
 
         $crawler = $client->request('GET', '/');
         $link = $crawler->selectLink('Créer un utilisateur')->link();
@@ -25,67 +29,61 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testNoLinkToUsersPathWithRoleUser()
+    public function testNoLinkToUsersPathWithRoleUser(): void
     {
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $crawler = $client->request('GET', '/');
+
         $this->assertSelectorTextNotContains('a', 'Créer un utilisateur');
     }
 
-    public function testUsersPathAccessDeniedToRoleUser()
+    public function testUsersPathAccessDeniedToRoleUser(): void
     {
         $this->expectException(AccessDeniedException::class);
 
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneBy([]);
-        $client->loginUser($testUser);
+        $client = static::createAuthenticatedClient();
 
         $client->CatchExceptions(false);
+
         $client->request('GET', '/users');
     }
 
-    public function testSuccessfullUserCreation()
+    public function testSuccessfullUserCreation(): void
     {
-        $client = static::createClient();
-
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $adminUser = $userRepository->findOneByRole('admin');
-        $client->loginUser($adminUser);
+        $client = static::createAuthenticatedWithRoleAdminClient();
 
         $crawler = $client->request('GET', '/users/create');
+
         $form = $crawler->selectButton('Ajouter')->form([
             'user[username]' => 'testUser',
             'user[password][first]' => 'password',
             'user[password][second]' => 'password',
             'user[email]' => 'testUser@gmail.com'
         ]);
+
         $client->submit($form);
         $client->followRedirect();
+
         $this->assertRouteSame('user_list');
         $this->assertSelectorExists('.alert.alert-success');
     }
 
-    public function testSuccessfullUserEdition()
+    public function testSuccessfullUserEdition(): void
     {
-        $client = static::createClient();
+        $client = static::createAuthenticatedWithRoleAdminClient();
 
+        /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
 
+        /** @var User $userToEdit */
         $userToEdit = $userRepository->findOneBy([]);
-        $adminUser = $userRepository->findOneByRole('admin');
-        $client->loginUser($adminUser);
 
         $crawler = $client->request(
-            'GET', 
+            'GET',
             '/users/' . $userToEdit->getId() . '/edit'
         );
+
         $form = $crawler->selectButton('Modifier')->form([
             'user[username]' => 'modifiedTestUser',
             'user[password][first]' => 'newPassword',
@@ -93,9 +91,10 @@ class UserControllerTest extends WebTestCase
             'user[email]' => 'modifedTestUser@gmail.com',
             'user[roles]' => ['ROLE_ADMIN']
         ]);
-        $client->click($form);
 
+        $client->click($form);
         $client->followRedirect();
+
         $this->assertSelectorExists('.alert.alert-success');
     }
 }
