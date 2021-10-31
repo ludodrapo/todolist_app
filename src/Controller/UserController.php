@@ -1,16 +1,23 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Handler\CreateUserHandler;
 use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class UserController extends AbstractController
+final class UserController extends AbstractController
 {
     /**
      * @Route("/users", name="user_list")
@@ -33,9 +40,7 @@ class UserController extends AbstractController
         $user = new User();
 
         if ($userHandler->handle($request, $user)) {
-
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
-
             return $this->redirectToRoute('user_list');
         }
 
@@ -53,11 +58,8 @@ class UserController extends AbstractController
         Request $request,
         CreateUserHandler $userHandler
     ): Response {
-
         if ($userHandler->handle($request, $user)) {
-
             $this->addFlash('success', "L'utilisateur a bien été modifié");
-
             return $this->redirectToRoute('user_list');
         }
 
@@ -65,7 +67,7 @@ class UserController extends AbstractController
             'user/edit.html.twig',
             [
                 'form' => $userHandler->createView(),
-                'user' => $user
+                'user' => $user,
             ]
         );
     }

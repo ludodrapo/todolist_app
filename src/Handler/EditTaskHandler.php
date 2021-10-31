@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use App\Entity\Task;
@@ -8,9 +15,10 @@ use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class EditTaskHandler
+ *
  * @package App\Handler
  */
-class EditTaskHandler extends AbstractHandler
+final class EditTaskHandler extends AbstractHandler
 {
     /**
      * @var EntityManagerInterface
@@ -19,23 +27,19 @@ class EditTaskHandler extends AbstractHandler
 
     /**
      * EditTaskHandler constructor.
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getFormType(): string
     {
         return TaskType::class;
     }
 
     /**
-     * @inheritDoc
+     * @param Task $task
      */
     protected function process($task): void
     {

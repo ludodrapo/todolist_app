@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use App\Entity\User;
@@ -9,9 +16,10 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * Class EditUserHandler
+ *
  * @package App\Handler
  */
-class EditUserHandler extends AbstractHandler
+final class EditUserHandler extends AbstractHandler
 {
     /**
      * @var EntityManagerInterface
@@ -25,7 +33,6 @@ class EditUserHandler extends AbstractHandler
 
     /**
      * TaskHandler constructor.
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -35,20 +42,16 @@ class EditUserHandler extends AbstractHandler
         $this->hasher = $hasher;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getFormType(): string
     {
         return UserType::class;
     }
 
     /**
-     * @inheritDoc
+     * @param User $user
      */
     protected function process($user): void
     {
-        /** @var User $user */
         $user->setPassword(
             $this->hasher->hashPassword(
                 $user,
