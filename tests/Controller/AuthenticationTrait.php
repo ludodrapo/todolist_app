@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\Entity\User;
@@ -8,13 +15,11 @@ use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 /**
  * Trait AuthenticationTrait
+ *
  * @package App\Tests\Controller
  */
 trait AuthenticationTrait
 {
-    /**
-     * @return KernelBrowser
-     */
     public static function createAuthenticatedClient(): KernelBrowser
     {
         $client = static::createClient();
@@ -30,10 +35,7 @@ trait AuthenticationTrait
         return $client;
     }
 
-    /**
-     * @return KernelBrowser
-     */
-    public static function createAuthenticatedWithRoleAdminClient(): KernelBrowser
+    public static function createAuthenticatedAdminClient(): KernelBrowser
     {
         $client = static::createClient();
 

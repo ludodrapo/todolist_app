@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use App\Entity\Task;
@@ -13,7 +20,7 @@ use Symfony\Component\Security\Core\Security;
  *
  * @package App\Handler
  */
-class CreateTaskHandler extends AbstractHandler
+final class CreateTaskHandler extends AbstractHandler
 {
     /**
      * @var EntityManagerInterface $entityManager
@@ -27,7 +34,6 @@ class CreateTaskHandler extends AbstractHandler
 
     /**
      * TaskHandler constructor.
-     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
         EntityManagerInterface $entityManager,
@@ -37,23 +43,19 @@ class CreateTaskHandler extends AbstractHandler
         $this->security = $security;
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function getFormType(): string
     {
         return TaskType::class;
     }
 
     /**
-     * @inheritDoc
+     * @param Task $task
      */
     protected function process($task): void
     {
         /** @var User $user */
         $user = $this->security->getUser();
 
-        /** @var Task $task */
         $task->setAuthor($user);
 
         $this->entityManager->persist($task);

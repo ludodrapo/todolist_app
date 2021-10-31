@@ -1,15 +1,22 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Tests\Controller\AuthenticationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class UserControllerTest
+ *
  * @package tests\Controller
  */
 class UserControllerTest extends WebTestCase
@@ -18,7 +25,7 @@ class UserControllerTest extends WebTestCase
 
     public function testLinkToUserCreationPageWithRoleAdminReturnsOk(): void
     {
-        $client = static::createAuthenticatedWithRoleAdminClient();
+        $client = static::createAuthenticatedAdminClient();
 
         $crawler = $client->request('GET', '/');
         $link = $crawler->selectLink('Créer un utilisateur')->link();
@@ -33,7 +40,7 @@ class UserControllerTest extends WebTestCase
     {
         $client = static::createAuthenticatedClient();
 
-        $crawler = $client->request('GET', '/');
+        $client->request('GET', '/');
 
         $this->assertSelectorTextNotContains('a', 'Créer un utilisateur');
     }
@@ -51,7 +58,7 @@ class UserControllerTest extends WebTestCase
 
     public function testSuccessfullUserCreation(): void
     {
-        $client = static::createAuthenticatedWithRoleAdminClient();
+        $client = static::createAuthenticatedAdminClient();
 
         $crawler = $client->request('GET', '/users/create');
 
@@ -59,7 +66,7 @@ class UserControllerTest extends WebTestCase
             'user[username]' => 'testUser',
             'user[password][first]' => 'password',
             'user[password][second]' => 'password',
-            'user[email]' => 'testUser@gmail.com'
+            'user[email]' => 'testUser@gmail.com',
         ]);
 
         $client->submit($form);
@@ -71,7 +78,7 @@ class UserControllerTest extends WebTestCase
 
     public function testSuccessfullUserEdition(): void
     {
-        $client = static::createAuthenticatedWithRoleAdminClient();
+        $client = static::createAuthenticatedAdminClient();
 
         /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
@@ -89,7 +96,7 @@ class UserControllerTest extends WebTestCase
             'user[password][first]' => 'newPassword',
             'user[password][second]' => 'newPassword',
             'user[email]' => 'modifedTestUser@gmail.com',
-            'user[roles]' => ['ROLE_ADMIN']
+            'user[roles]' => ['ROLE_ADMIN'],
         ]);
 
         $client->click($form);

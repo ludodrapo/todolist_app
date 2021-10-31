@@ -1,22 +1,27 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Task;
 use App\Entity\User;
-use App\Form\TaskType;
-use App\Handler\EditTaskHandler;
 use App\Handler\CreateTaskHandler;
+use App\Handler\EditTaskHandler;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class TaskController extends AbstractController
+final class TaskController extends AbstractController
 {
     /**
      * @Route("/tasks", name="task_list")
@@ -28,7 +33,7 @@ class TaskController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        if (in_array("ROLE_ADMIN", $user->getRoles())) {
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
             $anonymousTasks = $taskRepository->findBy(['author' => null]);
             foreach ($anonymousTasks as $anonymousTask) {
                 $tasks[] = $anonymousTask;
@@ -36,7 +41,7 @@ class TaskController extends AbstractController
         }
 
         return $this->render('task/list.html.twig', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
         ]);
     }
 
@@ -57,7 +62,7 @@ class TaskController extends AbstractController
         return $this->render(
             'task/create.html.twig',
             [
-                'form' => $taskHandler->createView()
+                'form' => $taskHandler->createView(),
             ]
         );
     }
@@ -100,7 +105,7 @@ class TaskController extends AbstractController
             "Vous n'êtes pas autorisé(e) à modifier cette ressource."
         );
 
-        $task->toggle(!$task->isDone());
+        $task->toggle(! $task->isDone());
         $entityManager->flush();
 
         return $this->redirectToRoute('task_list');

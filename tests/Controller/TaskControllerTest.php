@@ -1,12 +1,18 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
 use App\Entity\Task;
 use App\Entity\User;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
-use App\Tests\Controller\AuthenticationTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -55,7 +61,7 @@ class TaskControllerTest extends WebTestCase
 
     public function testDisplaysThisUserWithRoleAdminTasks(): void
     {
-        $client = static::createClient();
+        $client = static::createAuthenticatedAdminClient();
 
         /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
@@ -128,7 +134,7 @@ class TaskControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Ajouter')->form([
             'task[title]' => 'Test de titre',
-            'task[content]' => 'Test de contenu'
+            'task[content]' => 'Test de contenu',
         ]);
 
         $client->submit($form);
@@ -158,7 +164,7 @@ class TaskControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Modifier')->form([
             'task[title]' => 'Test de titre modifié',
-            'task[content]' => 'Test de contenu modifié'
+            'task[content]' => 'Test de contenu modifié',
         ]);
 
         $client->click($form);

@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use Symfony\Component\Form\FormFactoryInterface;
@@ -15,39 +22,30 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractHandler implements HandlerInterface
 {
     /**
-     * @var FormFactoryInterface
-     */
-    private $formFactory;
-
-    /**
      * @var FormInterface
      */
     protected $form;
 
     /**
-     * @return string
+     * @var FormFactoryInterface
      */
-    abstract protected function getFormType(): string;
+    private $formFactory;
 
     /**
-     * @param object $data
-     */
-    abstract protected function process(object $data): void;
-
-    /**
+     * Function name setFormFactory not to be changed
+     *
      * @required
-     * @param FormFactoryInterface $formFactory
      */
     public function setFormFactory(FormFactoryInterface $formFactory): void
     {
         $this->formFactory = $formFactory;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function handle(Request $request, object $data, array $options = []): bool
-    {
+    public function handle(
+        Request $request,
+        object $data,
+        array $options = []
+    ): bool {
         $this->form = $this->formFactory->create(
             $this->getFormType(),
             $data,
@@ -62,11 +60,12 @@ abstract class AbstractHandler implements HandlerInterface
         return false;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function createView(): FormView
     {
         return $this->form->createView();
     }
+
+    abstract protected function getFormType(): string;
+
+    abstract protected function process(object $data): void;
 }

@@ -1,55 +1,74 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use DateTime;
-use App\Entity\User;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Class Task
+ *
+ * @package App\Entity
+ *
  * @ORM\Entity
+ *
  * @ORM\Table
  */
 class Task
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
+     *
+     * @ORM\Column(type="integer")
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
      * @var int|null
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     *
      * @var \DateTimeImmutable
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string")
+     *
      * @Assert\NotBlank(message="Vous devez saisir un titre.")
+     *
      * @var string|null
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     *
      * @Assert\NotBlank(message="Vous devez saisir du contenu.")
+     *
      * @var string|null
      */
     private $content;
 
     /**
      * @ORM\Column(type="boolean")
+     *
      * @var bool
      */
     private $isDone;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tasks")
+     *
      * @var User|null
      */
     private $author;
