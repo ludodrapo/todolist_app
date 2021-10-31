@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
 declare(strict_types=1);
 
 namespace App\DataFixtures;
@@ -10,7 +15,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class AppFixtures extends Fixture
+final class AppFixtures extends Fixture
 {
     /**
      * @var UserPasswordHasherInterface
@@ -18,20 +23,15 @@ class AppFixtures extends Fixture
     protected $hasher;
 
     /**
-     * AppFixtures constructo
-     *
-     * @param userPasswordHasherInterface $hasher
+     * AppFixtures constructor
      */
-    public function __construct(userPasswordHasherInterface $hasher)
+    public function __construct(UserPasswordHasherInterface $hasher)
     {
         $this->hasher = $hasher;
     }
 
     /**
      * Loading all needed data to test the application
-     *
-     * @param ObjectManager $manager
-     * @return void
      */
     public function load(ObjectManager $manager): void
     {
@@ -46,14 +46,14 @@ class AppFixtures extends Fixture
             'Finir le projet 8',
             'Postuler chez OpenClassRooms',
             'Faire le ménage dans les papiers',
-            'Classer les petites pièces de Lego'
+            'Classer les petites pièces de Lego',
         ];
 
         $details = [
             "Penser à bien s'organiser avant et prévoir tout ce qu'il faut pour ne pas se retrouver le bec dans l'eau.",
             "Bien dire à tout le monde qu'on va le faire bientôt, histoire de s'engager à la réalisation de cette tâche.",
             "Prendre son temps pour la réalisation pour ne pas faire d'erreur et ne pas avoir à tout refaire.",
-            "Surtout ne rien dire à personne pour, en cas d'échec cuisant, être encore considéré en tant que tel et ne pas être la victime de quolifichets !"
+            "Surtout ne rien dire à personne pour, en cas d'échec cuisant, être encore considéré en tant que tel et ne pas être la victime de quolifichets !",
         ];
 
         for ($i = 1; $i <= 10; $i++) {
@@ -63,8 +63,6 @@ class AppFixtures extends Fixture
             $manager->persist($newTask);
         }
 
-        $index = 11;
-
         for ($i = 1; $i <= 10; $i++) {
             $newUser = new User();
             $newUser->setUsername('user' . $i);
@@ -73,13 +71,12 @@ class AppFixtures extends Fixture
             $newUser->setEmail('user' . $i . '@gmail.com');
             $manager->persist($newUser);
 
-            for ($j = 1; $j <= 3; $j++) {
+            for ($index = 1; $index <= 3; $index++) {
                 $newTask = new Task();
                 $newTask->setTitle($tasks[array_rand($tasks)]);
                 $newTask->setContent($details[array_rand($details)]);
                 $newTask->setAuthor($newUser);
                 $manager->persist($newTask);
-                $index++;
             }
         }
 

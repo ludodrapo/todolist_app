@@ -1,9 +1,7 @@
 <?php
 
-/*
- * This file is part of the ToDoList App
- * OpenClassRooms PHP/Symfony project 8
- * 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
  * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
  */
 
@@ -13,16 +11,16 @@ namespace App\Repository;
 
 use App\Entity\Task;
 use App\Entity\User;
-use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Task|null find($id, $lockMode = null, $lockVersion = null)
  * @method Task|null findOneBy(array $criteria, array $orderBy = null)
- * @method Task[]    findAll()
- * @method Task[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method array<Task> findAll()
+ * @method array<Task> findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TaskRepository extends ServiceEntityRepository
+final class TaskRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

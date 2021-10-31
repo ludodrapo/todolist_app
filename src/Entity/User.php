@@ -1,60 +1,84 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * Class User
+ *
+ * @package App\Entity
+ *
  * @ORM\Entity
+ *
  * @ORM\Table("user")
+ *
  * @UniqueEntity("email", message="Cet email est déjà utilisé.")
  * @UniqueEntity("username", message="Ce nom d'utilisateur est déjà utilisé.")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
+     *
+     * @ORM\Column(type="integer")
+     *
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
      * @var int|null
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=25, unique=true)
+     *
      * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
+     *
      * @var string|null
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=64)
+     *
      * @var string
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
+     *
      * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
+     *
      * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
+     *
      * @var string|null
      */
     private $email;
 
     /**
      * @ORM\OneToMany(targetEntity=Task::class, mappedBy="author")
+     *
      * @var Collection
      */
     private $tasks;
 
     /**
      * @ORM\Column(type="json")
+     *
      * @var array<string|null>
      */
     private $roles = [];
@@ -79,6 +103,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->username = $username;
     }
 
+    /**
+     * @return void
+     */
     public function getSalt()
     {
         return null;
@@ -108,7 +135,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * A visual identifier that represents this user.
      *
      * @see UserInterface
-     * @return string
      */
     public function getUserIdentifier(): ?string
     {
@@ -117,7 +143,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @see UserInterface
-     * @return array
      */
     public function getRoles(): array
     {
@@ -130,7 +155,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @param array $roles
-     * @return self
      */
     public function setRoles(array $roles): self
     {
@@ -144,7 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|Task[]
+     * @return Collection|array<Task|null>
      */
     public function getTasks(): Collection
     {

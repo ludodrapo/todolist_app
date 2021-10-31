@@ -1,13 +1,20 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Tests\Controller;
 
-use App\Repository\UserRepository;
-use App\Tests\Controller\AuthenticationTrait;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Class LoginControllerTest
+ *
  * @package tests\Controller
  */
 class LoginControllerTest extends WebTestCase
@@ -16,6 +23,7 @@ class LoginControllerTest extends WebTestCase
 
     public function testDisplaysLoginPage(): void
     {
+        /** @var KernelBrowser $client */
         $client = static::createClient();
 
         $client->request('GET', '/login');
@@ -32,7 +40,7 @@ class LoginControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Se connecter')->form([
             '_username' => 'unknown',
-            '_password' => 'password'
+            '_password' => 'password',
         ]);
 
         $client->submit($form);
@@ -52,7 +60,7 @@ class LoginControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Se connecter')->form([
             '_username' => 'user1',
-            '_password' => 'wrongPassword'
+            '_password' => 'wrongPassword',
         ]);
 
         $client->submit($form);
@@ -72,7 +80,7 @@ class LoginControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Se connecter')->form([
             '_username' => 'user1',
-            '_password' => 'password'
+            '_password' => 'password',
         ]);
 
         $client->submit($form);

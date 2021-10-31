@@ -1,39 +1,50 @@
 <?php
 
+/**
+ * This file is part of OpenClassRooms project 8 ToDoList
+ * Modified by Ludovic Drapeau <ludodrapo@gmail.com>
+ */
+
+declare(strict_types=1);
+
 namespace App\Security\Voter;
 
+use App\Entity\Task;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class TaskAccessVoter extends Voter
+final class TaskAccessVoter extends Voter
 {
+    /**
+     * @param Task $subject
+     */
     protected function supports(string $attribute, $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, ['CAN_EDIT'])
             && $subject instanceof \App\Entity\Task;
     }
 
-    protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
-    {
+    /**
+     * @param Task $subject
+     */
+    protected function voteOnAttribute(
+        string $attribute,
+        $subject,
+        TokenInterface $token
+    ): bool {
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
+        if (! $user instanceof UserInterface) {
             return false;
         }
-
-        // ... (check conditions and return true to grant permission) ...
-        switch ($attribute) {
-            case 'CAN_EDIT':
-                if (
-                    $subject->getAuthor() === $user ||
-                    (in_array("ROLE_ADMIN", $user->getRoles())
-                        && $subject->getAuthor() == null)
-                ) {
-                    return true;
-                }
+        // CAN_EDIT case
+        if (
+            $subject->getAuthor() === $user ||
+            (in_array('ROLE_ADMIN', $user->getRoles()) &&
+                $subject->getAuthor() === null)
+        ) {
+            return true;
         }
 
         return false;
