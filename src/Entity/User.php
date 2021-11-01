@@ -72,14 +72,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\OneToMany(targetEntity=Task::class, mappedBy="author")
      *
-     * @var Collection
+     * @var Collection<int,Task>
      */
     private $tasks;
 
     /**
      * @ORM\Column(type="json")
      *
-     * @var array<string|null>
+     * @var array<int,string>
      */
     private $roles = [];
 
@@ -168,7 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection|array<Task|null>
+     * @return Collection<int,Task>
      */
     public function getTasks(): Collection
     {
