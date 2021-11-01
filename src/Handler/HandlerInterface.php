@@ -19,6 +19,9 @@ use Symfony\Component\HttpFoundation\Request;
  */
 interface HandlerInterface
 {
+    /**
+     * @param array<string,mixed> $options
+     */
     public function handle(
         Request $request,
         object $data,

@@ -156,10 +156,13 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $userTasks = $testUser->getTasks();
+        
+        /** @var Task $task */
+        $task = $userTasks->first();
 
         $crawler = $client->request(
             'GET',
-            '/tasks/' . $userTasks[0]->getId() . '/edit'
+            '/tasks/' . $task->getId() . '/edit'
         );
 
         $form = $crawler->selectButton('Modifier')->form([
