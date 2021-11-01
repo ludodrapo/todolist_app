@@ -163,6 +163,9 @@
     "league/container": {
         "version": "3.4.1"
     },
+    "lorenzo/pinky": {
+        "version": "1.0.5"
+    },
     "monolog/monolog": {
         "version": "2.3.5"
     },
@@ -731,7 +734,19 @@
     "theseer/tokenizer": {
         "version": "1.2.1"
     },
+    "tijsverkoyen/css-to-inline-styles": {
+        "version": "2.2.3"
+    },
+    "twig/cssinliner-extra": {
+        "version": "v3.3.3"
+    },
     "twig/extra-bundle": {
+        "version": "v3.3.3"
+    },
+    "twig/inky-extra": {
+        "version": "v3.3.3"
+    },
+    "twig/markdown-extra": {
         "version": "v3.3.3"
     },
     "twig/twig": {
