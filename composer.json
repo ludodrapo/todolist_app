@@ -1,5 +1,7 @@
 {
     "type": "project",
+    "description": "OpenClassRooms Project 8 Todolist Application",
+    "name": "ludodrapo/todolist",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
@@ -7,7 +9,7 @@
         "php": ">=7.2.5",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "composer/package-versions-deprecated": "1.11.99.4",
+        "composer/package-versions-deprecated": "^1.11",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
