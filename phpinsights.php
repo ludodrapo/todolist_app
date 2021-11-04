@@ -79,9 +79,6 @@ return [
                 'src/Kernel.php',
             ],
         ],
-        \ObjectCalisthenics\Sniffs\Metrics\MethodPerClassLimitSniff::class => [
-            'maxCount' => 16,
-        ],
         \SlevomatCodingStandard\Sniffs\Classes\SuperfluousInterfaceNamingSniff::class => [
             'exclude' => [
                 'src/Handler',
@@ -97,8 +94,8 @@ return [
                 'src',
             ],
         ],
-        \ObjectCalisthenics\Sniffs\Files\FunctionLengthSniff::class => [
-            'maxLength' => 25,
+        \SlevomatCodingStandard\Sniffs\Functions\FunctionLengthSniff::class => [
+            'maxLinesLength' => 25,
         ],
     ],
 
