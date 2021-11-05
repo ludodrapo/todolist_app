@@ -51,8 +51,6 @@ class TaskControllerTest extends WebTestCase
 
         $tasksCount = count($testUser->getTasks());
 
-        // dd($client->getContainer()->get('session'));
-
         $crawler = $client->request('GET', '/tasks');
 
         $this->assertResponseIsSuccessful();
@@ -61,7 +59,7 @@ class TaskControllerTest extends WebTestCase
 
     public function testDisplaysThisUserWithRoleAdminTasks(): void
     {
-        $client = static::createAuthenticatedAdminClient();
+        $client = static::createClient();
 
         /** @var UserRepository $userRepository */
         $userRepository = static::getContainer()->get(UserRepository::class);
@@ -86,11 +84,22 @@ class TaskControllerTest extends WebTestCase
 
     public function testSuccessfullDeleteOneTask(): void
     {
-        $client = static::createAuthenticatedClient();
+        $client = static::createClient();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
+        $testUser = $userRepository->findOneBy([]);
+
+        $client->loginUser($testUser);
+
+        /** @var Task $usersTask */
+        $usersTask = $testUser->getTasks()->first();
 
         $crawler = $client->request('GET', '/tasks');
-        $form = $crawler->selectButton('delete-btn')->form();
-        $client->submit($form);
+        $link = $crawler->filter('#task-' . $usersTask->getId() . '-delete-btn')->link();
+        $client->click($link);
 
         $client->followRedirect();
         $this->assertSelectorExists('.alert.alert-success');
@@ -98,17 +107,28 @@ class TaskControllerTest extends WebTestCase
 
     public function testSuccessfullToggleOneTask(): void
     {
-        $client = static::createAuthenticatedClient();
+        $client = static::createClient();
+
+        /** @var UserRepository $userRepository */
+        $userRepository = static::getContainer()->get(UserRepository::class);
+
+        /** @var User $testUser */
+        $testUser = $userRepository->findOneBy([]);
+
+        $client->loginUser($testUser);
+
+        /** @var Task $usersTask */
+        $usersTask = $testUser->getTasks()->first();
 
         $crawler = $client->request('GET', '/tasks');
-        $form = $crawler->selectButton('task-done-btn')->form();
-        $client->submit($form);
+        $link = $crawler->filter('#task-' . $usersTask->getId() . '-done-btn')->link();
+        $client->click($link);
 
         $crawler = $client->followRedirect();
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('task-undone-btn')->form();
-        $client->submit($form);
+        $link = $crawler->filter('#task-' . $usersTask->getId() . '-undone-btn')->link();
+        $client->click($link);
 
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
@@ -156,7 +176,7 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $userTasks = $testUser->getTasks();
-        
+
         /** @var Task $task */
         $task = $userTasks->first();
 
@@ -170,7 +190,7 @@ class TaskControllerTest extends WebTestCase
             'task[content]' => 'Test de contenu modifié',
         ]);
 
-        $client->click($form);
+        $client->submit($form);
         $client->followRedirect();
 
         $this->assertSelectorExists('.alert.alert-success');

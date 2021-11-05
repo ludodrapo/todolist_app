@@ -11,13 +11,16 @@
 			<a href="{{ path('user_create') }}" class="btn btn-warning">Créer un utilisateur</a>
 		</div>
 	{% else %}
+		<div class="row mb-5">
+			<a href="{{ path('user_create') }}" class="btn btn-success">Enregistrer un nouvel utilisateur</a>
+		</div>
 		<div class="row">
 			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>#</th>
 						<th>Nom d'utilisateur</th>
-						<th>Adresse d'utilisateur</th>
+						<th>Adresse mail de l'utilisateur</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -29,7 +32,7 @@
 							<td>{{ user.email }}</td>
 							<td>
 								<a href="{{ path('user_edit', {'id': user.id}) }}" class="btn btn-success btn-sm">
-									<i class="bi bi-pencil-fill"></i>
+									<i class="bi bi-pencil-fill" title="Modifier cet utilisateur"></i>
 								</a>
 							</td>
 						</tr>
