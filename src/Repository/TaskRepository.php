@@ -29,11 +29,14 @@ final class TaskRepository extends ServiceEntityRepository
 
     public function findOneOfAnotherUser(User $user): Task
     {
-        return $this->createQueryBuilder('t')
+        /** @var Task $task */
+        $task = $this->createQueryBuilder('t')
             ->andWhere('t.author != :user')
             ->setParameter('user', $user)
             ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult();
+
+        return $task;
     }
 }
