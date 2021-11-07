@@ -60,6 +60,7 @@ return [
 
     'remove' => [
         SlevomatCodingStandard\Sniffs\TypeHints\DisallowMixedTypeHintSniff::class,
+        PhpCsFixer\Fixer\ReturnNotation\ReturnAssignmentFixer::class,
     ],
 
     'config' => [
