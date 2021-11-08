@@ -1,5 +1,5 @@
 
-# My Lil' 2DO app
+# My Lil' 2Do List app
 
 Project number 8 from the OpenClassRooms cursus on PHP/Symfony developpement.
 
