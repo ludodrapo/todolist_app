@@ -4,9 +4,15 @@
 
 #### Table Of Contents
 
+[Installing the project](#installing-the-project)
+
 [Code of Conduct](#code-of-conduct)
 
 [I just have a question!!!](#i-just-have-a-question)
+
+## Installing the project
+
+If you wish to contributing, first thing to do might be to fork or download the files and following the [Readme.md](README.md) file instructions.
 
 ## Code of Conduct
 
