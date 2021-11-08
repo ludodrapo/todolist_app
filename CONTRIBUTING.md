@@ -6,4 +6,13 @@
 
 [Code of Conduct](#code-of-conduct)
 
-[I don't want to read this whole thing, I just have a question!!!](#i-dont-want-to-read-this-whole-thing-i-just-have-a-question)
+[I just have a question!!!](#i-just-have-a-question)
+
+## Code of Conduct
+
+This project and everyone participating in it is governed by the [Project code of conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [ludodrapo@gmail.com](mailto:ludodrapo@gmail.com).
+
+## I just have a question!!!
+
+> **Note:** [Please don't file an issue to ask a question.]
+> You'll get faster results by sending an simple email to [ludodrapo@gmail.com](mailto:ludodrapo@gmail.com)
