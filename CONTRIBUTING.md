@@ -20,5 +20,5 @@ This project and everyone participating in it is governed by the [Project code o
 
 ## I just have a question!!!
 
-> **Note:** [Please don't file an issue to ask a question.]
-> You'll get faster results by sending an simple email to [ludodrapo@gmail.com](mailto:ludodrapo@gmail.com)
+**Note:** [Please don't file an issue to ask a question.]
+You'll get faster results by sending an simple email to [ludodrapo@gmail.com](mailto:ludodrapo@gmail.com)
