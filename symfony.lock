@@ -148,6 +148,9 @@
     "friendsoftwig/twigcs": {
         "version": "v5.1.0"
     },
+    "icanhazstring/composer-unused": {
+        "version": "0.7.7"
+    },
     "justinrainbow/json-schema": {
         "version": "5.2.11"
     },
@@ -343,6 +346,18 @@
         },
         "files": [
             "phpcs.xml.dist"
+        ]
+    },
+    "symfony/apache-pack": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "9d254a22efca7264203eea98b866f16f944b2f09"
+        },
+        "files": [
+            "public/.htaccess"
         ]
     },
     "symfony/asset": {
@@ -579,9 +594,6 @@
     },
     "symfony/property-info": {
         "version": "v5.3.8"
-    },
-    "symfony/proxy-manager-bridge": {
-        "version": "v5.3.4"
     },
     "symfony/routing": {
         "version": "5.3",

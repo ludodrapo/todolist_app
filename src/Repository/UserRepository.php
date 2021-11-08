@@ -37,11 +37,14 @@ final class UserRepository extends ServiceEntityRepository
     {
         $role = '"ROLE_' . strtoupper($role) . '"';
 
-        return $this->createQueryBuilder('q')
+        /** @var User $user */
+        $user = $this->createQueryBuilder('q')
             ->andWhere('JSON_CONTAINS(q.roles, :roles) = 1')
             ->setParameter('roles', $role)
             ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult();
+
+        return $user;
     }
 }

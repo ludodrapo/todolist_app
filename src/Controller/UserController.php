@@ -11,6 +11,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Handler\CreateUserHandler;
+use App\Handler\EditUserHandler;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,7 +57,7 @@ final class UserController extends AbstractController
     public function editAction(
         User $user,
         Request $request,
-        CreateUserHandler $userHandler
+        EditUserHandler $userHandler
     ): Response {
         if ($userHandler->handle($request, $user)) {
             $this->addFlash('success', "L'utilisateur a bien été modifié");

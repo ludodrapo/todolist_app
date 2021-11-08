@@ -5,4 +5,6 @@ parameters:
 	    - tests
 	checkMissingIterableValueType: false
 	checkGenericClassInNonGenericObjectType: false
-	
+	ignoreErrors:
+	    - '#Property App\\Entity\\Task::\$id is never written, only read.#'
+	    - '#Property App\\Entity\\User::\$id is never written, only read.#'
