@@ -12,14 +12,14 @@ To "try it at home", you can download these files, or clone this repository.
 You'll just have to configure your .env.local with the access to your own database server like this
 ```
 ###> doctrine/doctrine-bundle ###
-DATABASE_URL="mysql:/db_/user:db_password@127.0.0.1:8889/db_name?serverVersion=5.7"
+DATABASE_URL="mysql://db_user:db_password@127.0.0.1:1234/db_name?serverVersion=5.7"
 ###> doctrine/doctrine-bundle ###
 ```
-then run the following composer scripts
+then run the following composer scripts (just check that you're still in APP_ENV=dev)
 ```
 % composer install
 ```
-Then 
+Then, assuming you have npm (or yarn) already installed
 ```
 % npm install
 ```
@@ -27,6 +27,6 @@ And finaly
 ```
 % composer prepare
 ```
-To create database, update schema and load fixtures.
+To execute the script that creates database, updates schema and load sfixtures.
 
 
