@@ -15,7 +15,7 @@ You'll just have to configure your .env.local with the access to your own databa
 DATABASE_URL="mysql://db_user:db_password@127.0.0.1:1234/db_name?serverVersion=5.7"
 ###> doctrine/doctrine-bundle ###
 ```
-then run the following composer scripts (just check that you're still in APP_ENV=dev)
+then run the following composer scripts
 ```
 % composer install
 ```
