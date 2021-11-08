@@ -1,4 +1,5 @@
 module.exports = {
+    syntax: 'postcss-scss',
     plugins: {
         // include whatever plugins you want
         // but make sure you install these via yarn or npm!
