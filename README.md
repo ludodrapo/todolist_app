@@ -5,6 +5,8 @@ Project number 8 from the OpenClassRooms cursus on PHP/Symfony developpement.
 
 Created by Sarah0h and modified by Ludo Drapo with Symfony 5.3, php 8.0 and MySql 5.7.
 
+Feel free to [contribute](#contributing) !
+
 Bootswatch used for visual enhancements.
 
 To "try it at home", you can download these files, or clone this repository.
