@@ -15,13 +15,18 @@ You'll just have to configure your .env.local with the access to your own databa
 DATABASE_URL="mysql:/db_/user:db_password@127.0.0.1:8889/db_name?serverVersion=5.7"
 ###> doctrine/doctrine-bundle ###
 ```
-then run ths following composer scripts
+then run the following composer scripts
 ```
 % composer install
 ```
-And after that
+Then 
+```
+% npm install
+```
+And finaly
 ```
 % composer prepare
 ```
+To create database, update schema and load fixtures.
 
 
