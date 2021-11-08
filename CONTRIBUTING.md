@@ -1,4 +1,4 @@
-# Contributing to My Lil' 2Do App
+# Contributing to My Lil' 2Do List App
 
 :+1: First of all, thank you for taking the time to contribute! :+1:
 
