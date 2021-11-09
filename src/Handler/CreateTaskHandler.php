@@ -33,7 +33,7 @@ final class CreateTaskHandler extends AbstractHandler
     private $security;
 
     /**
-     * TaskHandler constructor.
+     * CreateTaskHandler constructor.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
