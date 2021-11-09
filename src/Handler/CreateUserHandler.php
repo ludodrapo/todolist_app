@@ -32,7 +32,7 @@ final class CreateUserHandler extends AbstractHandler
     private $hasher;
 
     /**
-     * TaskHandler constructor.
+     * CreateUserHandler constructor.
      */
     public function __construct(
         EntityManagerInterface $entityManager,

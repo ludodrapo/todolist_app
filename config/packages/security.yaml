@@ -20,11 +20,12 @@ security:
                 property: username
 
     firewalls:
+        
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
         main:
-            # anonymous: ~
             pattern: ^/
             form_login:
                 login_path: login

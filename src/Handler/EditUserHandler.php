@@ -32,7 +32,7 @@ final class EditUserHandler extends AbstractHandler
     private $hasher;
 
     /**
-     * TaskHandler constructor.
+     * EditUserHandler constructor.
      */
     public function __construct(
         EntityManagerInterface $entityManager,
