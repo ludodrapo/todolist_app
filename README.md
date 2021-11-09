@@ -40,7 +40,7 @@ And finaly
 ```
 To execute the script that creates database, updates schema and loads fixtures.
 
-You can easily use the app in your browser with the symfony server by running
+You can easily use the app in your browser in a dev environment with the symfony server by running
 ```
 % symfony serve
 ```
@@ -48,5 +48,5 @@ And don't forget to run
 ```
 % npm run watch
 ```
-If you want to make changes in the assets (js and css/scss files).
+If you want to make changes in the assets (js and css/scss files) and see those changes while you do it (rebuild the assests after each change).
 
