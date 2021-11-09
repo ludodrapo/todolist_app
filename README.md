@@ -40,7 +40,7 @@ And finaly
 ```
 To execute the script that creates database, updates schema and loads fixtures.
 
-You can easily use the app in your browser in a dev environment with the symfony server by running
+You can easily test the app in your browser in a dev environment with the symfony server by running
 ```
 % symfony serve
 ```
