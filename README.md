@@ -16,10 +16,10 @@ To "try it at home", you can download these files, or clone this repository
 % git clone https://github.com/ludodrapo/todolist_app.git
 
 # Go to the repository
-cd todolist_app
+% cd todolist_app
 ```
 
-After you opened it with your favorite IDE, you'll just have to configure your .env.local with the access to your own database server like this
+After you opened it with your favorite IDE, you'll just have to create and configure your .env.local file with the access to your own database server like this
 ```
 ###> doctrine/doctrine-bundle ###
 DATABASE_URL="mysql://db_user:db_password@127.0.0.1:1234/db_name?serverVersion=5.7"
@@ -29,7 +29,8 @@ then run the following composer scripts
 ```
 % composer install
 ```
-Then, assuming you have npm (or yarn) already installed
+To install all composer dependencies.
+Then, assuming you have npm already installed (or yarn)
 ```
 % npm install
 ```
@@ -37,15 +38,15 @@ And finaly
 ```
 % composer prepare
 ```
-To execute the script that creates database, updates schema and load sfixtures.
+To execute the script that creates database, updates schema and loads fixtures.
 
-You can easily run the app in your browser with the symfony server by running
+You can easily use the app in your browser with the symfony server by running
 ```
-symfony serve
+% symfony serve
 ```
 And don't forget to run
 ```
-npm run watch
+% npm run watch
 ```
-If you want to make changes in the assets (js and css/scss files)
+If you want to make changes in the assets (js and css/scss files).
 
