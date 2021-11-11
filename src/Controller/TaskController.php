@@ -28,10 +28,10 @@ final class TaskController extends AbstractController
      */
     public function listAction(TaskRepository $taskRepository): Response
     {
-        $tasks = $taskRepository->findBy(['author' => $this->getUser()]);
-
         /** @var User $user */
         $user = $this->getUser();
+
+        $tasks = $taskRepository->findBy(['author' => $user]);
 
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             $anonymousTasks = $taskRepository->findBy(['author' => null]);

@@ -10,9 +10,10 @@
 
 	{% include "/user/partials/_userForm.html.twig" %}
 
-	<div class="row">
+	<div class="d-flex justify-content-between align-items-center">
 		<button type="submit" class="btn btn-success pull-right">Ajouter</button>
+		{{ form_end(form) }}
+		<a href="{{ path('user_list') }}" class="btn btn-primary">Retour à la liste des utilisateurs</a>
 	</div>
 
-	{{ form_end(form) }}
 {% endblock %}
